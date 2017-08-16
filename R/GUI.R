@@ -572,7 +572,7 @@ hrm.GUI <- function(){
           }, warning = function(w) "", error = function(e) {GUI_error(e, "There is a problem with your formula for the response variable.")
             errorOccured <<- 1})
         }
-
+ 
 
         if(!is.na(alpha) & errorOccured == 0){
           if(alpha > 0 & alpha < 1) {
