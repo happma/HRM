@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: HRM\nVersion: 0.7.2\nDate: 2017-08-13\nTitle: High-Dimensional Repeated Measures\nAuthors@R: c(person(\"Martin Happ\", role = c(\"aut\", \"cre\"),\n                      email = \"martin.happ@aon.at\"),\n\t      person(\"Harrar W. Solomon\", role = \"aut\"),\n\t      person(\"Arne C. Bathke\", role = \"aut\"))\nAuthor: Martin Happ [aut, cre], Harrar W. Solomon [aut], Arne C. Bathke [aut]\nMaintainer: Martin Happ <martin.happ@aon.at>\nLazyData: true\nDepends: R (>= 3.4.0), MASS, matrixcalc, plyr, ggplot2\nImports: xtable, reshape2, tcltk\nSuggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras\nDescription: Methods for testing main and interaction effects in possibly\n    high-dimensional repeated measures in factorial designs. The observations\n    of the subjects are assumed to be multivariate normal.\n    It is possible to use up to 2 whole- and 3 subplot factors.\nLicense: GPL-2 | GPL-3\nRoxygenNote: 6.0.1\nNeedsCompilation: no\n",
+    "created" : 1502657950705.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2731174488",
+    "id" : "AF6848DE",
+    "lastKnownWriteTime" : 1502714939,
+    "last_content_update" : 1502714939,
+    "path" : "C:/Users/Martin/Dropbox/Masterarbeit/repeated measures/package/Repeated/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}

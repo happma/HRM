@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "export(hrm.test, hrm.test.matrix, hrm.test.dataframe, hrm.test.2, hrm_test, hrm.plot, hrm.GUI) \nimport(matrixcalc)\nimport(MASS)\nimport(plyr)\nimport(ggplot2)\nimportFrom(\"stats\", \"pf\", \"qf\", \"var\", \"as.formula\")\nimportFrom(\"reshape2\", \"melt\")\nimportFrom(\"stats\", \"model.frame\", \"terms.formula\")\nimportFrom(\"utils\", \"read.table\", \"write.table\")\nimportFrom(\"xtable\", \"xtable\")\nimportFrom(\"grDevices\", \"dev.new\")\nimportFrom(\"tcltk\", \"tkchooseDirectory\",\"tkgetOpenFile\" , \"tclvalue\")\nS3method(print,HRM)\nS3method(summary,HRM)\n",
+    "created" : 1502714886581.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1142385707",
+    "id" : "76F9530",
+    "lastKnownWriteTime" : 1501915036,
+    "last_content_update" : 1501915036,
+    "path" : "P:/Dropbox/Masterarbeit/repeated measures/package/Repeated/NAMESPACE",
+    "project_path" : "NAMESPACE",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_namespace"
+}

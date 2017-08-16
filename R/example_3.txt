@@ -1,0 +1,5 @@
+data(EEG)
+
+hrm_test(value ~ group*region+variable+variable:region-group,
+           data = EEG, alpha=0.05, subject="subject")
+

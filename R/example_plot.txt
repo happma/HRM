@@ -1,0 +1,6 @@
+data(EEG)
+head(EEG)
+
+# plots profiles according to groups with
+# subplot-factor called dimension
+hrm.plot(EEG,"group", "dimension", "subject", "value")
