@@ -1,14 +1,14 @@
 ####################################################################################################################################
 ### Filename:    f1.R
-### Description: Function for calculating the test statistic for one subplot factor
+### Description: Function for calculating the test statistic for only one subplot factor
 ###              
 ###
 ###
 ####################################################################################################################################
 
-#' Test for no main effects and interactino effects of one between-subject factor and one crossed within-subject factors
+#' Test for main time effect (in case of no whole-plot factors)
 #' 
-#' @param X list containing the data matrices of all groups
+#' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
 #' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
@@ -26,6 +26,7 @@ hrm.test.1.one <- function(X, alpha , factor1, subject, data, formula ){
   output$alpha <- alpha
   output$subject <- subject
   output$factors <- list(c("none"), c(factor1))
+  output$data <- X
   class(output) <- "HRM"
   
   return (output)
@@ -34,7 +35,7 @@ hrm.test.1.one <- function(X, alpha , factor1, subject, data, formula ){
 
 #' Test for interaction of factor A and B
 #' 
-#' @param X list containing the data matrices of all groups
+#' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
 #' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
@@ -79,7 +80,7 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" ){
   }
   S <- 1
   # creating dual empirical covariance matrices
-  K_AB <- kronecker(S, K)
+  K_B <- kronecker(S, K)
   V <- list(DualEmpirical2(Data = X, B=K)) #lapply(X, DualEmpirical2, B=K)
   
   #################################################################################################
@@ -133,7 +134,7 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" ){
   # Test
 
   direct <- 1/n[1]*var(X)
-  test <- (t(X_bar)%*%K_AB%*%X_bar)/(t(rep(1,dim(K_AB)[1]))%*%(K_AB*direct)%*%(rep(1,dim(K_AB)[1])))
+  test <- (t(X_bar)%*%K_B%*%X_bar)/(t(rep(1,dim(K_B)[1]))%*%(K_B*direct)%*%(rep(1,dim(K_B)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
   

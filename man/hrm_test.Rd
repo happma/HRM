@@ -2,12 +2,30 @@
 % Please edit documentation in R/Repeated.R
 \name{hrm_test}
 \alias{hrm_test}
-\title{Test for main effects and interaction effects.}
+\title{Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).}
 \usage{
 hrm_test(formula, data, alpha = 0.05, subject)
 }
 \arguments{
 \item{formula}{A model formula object. The left hand side contains the response variable and the right hand side contains the whole- and subplot factors.}
+
+\item{data}{A data.frame containing the data}
+
+\item{alpha}{alpha level used for the test}
+
+\item{subject}{column name within the data frame X identifying the subjects}
+
+\item{group}{column name within the data frame data specifying the groups}
+
+\item{subgroup}{column name within the data frame data specifying the subgroups (crossed with groups)}
+
+\item{factor1}{column name within the data frame data specifying the first subplot-factor}
+
+\item{factor2}{column name within the data frame data specifying the the second subplot-factor}
+
+\item{factor3}{column name within the data frame data specifying the the third subplot-factor}
+
+\item{response}{column name within the data frame X containing the response variable}
 
 \item{data}{A data.frame containing the data. The columns containing the factor variables need to have the type 'factor'. One column is needed to indentify the subjects.}
 
@@ -16,21 +34,32 @@ hrm_test(formula, data, alpha = 0.05, subject)
 \item{subject}{column name within the data frame X identifying the subjects}
 }
 \value{
-Returns an object from class HRM containing
-\item{result}{A dataframe with the results from the hypotheses tests.}
-\item{formula}{The formula object which was used.}
-\item{alpha}{The type-I error rate which was used.}
-\item{subject}{The column name identifying the subjects.}
-\item{factors}{A list containing the whole- and subplot factors.}
+Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
+
+Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 }
 \description{
 Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).
 }
-\examples{
-data(EEG)
-
-hrm_test(value ~ group*region+variable+variable:region-group,
-           data = EEG, alpha=0.05, subject="subject")
-
-}
-\keyword{export}
+\keyword{(at}
+\keyword{Test}
+\keyword{and}
+\keyword{be}
+\keyword{between-subject}
+\keyword{can}
+\keyword{effects}
+\keyword{factors}
+\keyword{for}
+\keyword{four}
+\keyword{interaction}
+\keyword{internal}
+\keyword{main}
+\keyword{most}
+\keyword{of}
+\keyword{one}
+\keyword{one,}
+\keyword{or}
+\keyword{three}
+\keyword{two}
+\keyword{used).}
+\keyword{within-subject}

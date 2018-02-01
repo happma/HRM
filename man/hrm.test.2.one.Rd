@@ -4,11 +4,11 @@
 \alias{hrm.test.2.one}
 \title{Test for no main effects and interactino effects of one between-subject factor and one crossed within-subject factors}
 \usage{
-hrm.test.2.one(X, alpha, group, factor1, subject, data, testing = rep(1, 4),
-  formula)
+\method{hrm.test}{2.one}(X, alpha, group, factor1, subject, data,
+  testing = rep(1, 4), formula)
 }
 \arguments{
-\item{X}{list containing the data matrices of all groups}
+\item{X}{dataframe containing the data in the long table format}
 
 \item{alpha}{alpha level used for the test}
 

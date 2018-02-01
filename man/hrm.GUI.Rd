@@ -2,7 +2,7 @@
 % Please edit documentation in R/GUI.R
 \name{hrm.GUI}
 \alias{hrm.GUI}
-\title{Graphical User Interface for the Function 'hrm_test'.}
+\title{Graphical User Interface for Testing Multi-Factor High-Dimensional Repeated Measures}
 \usage{
 hrm.GUI()
 }

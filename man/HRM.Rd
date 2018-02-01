@@ -11,8 +11,8 @@ Tests for main and simple treatment effects, time effects, as well as treatment 
 \tabular{ll}{
 Package: \tab HRM\cr
 Type: \tab Package\cr
-Version: \tab 0.7.2\cr
-Date: \tab 2017-08-13\cr
+Version: \tab 0.8.0\cr
+Date: \tab 2018-02-01\cr
 License: \tab GPL-2 | GPL-3 \cr
 }
 }

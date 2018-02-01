@@ -51,8 +51,8 @@ gui.results <- function(result, factors, dec, sep) {
   actions <- list(
     list("FileMenu", NULL, "_File"),
     #  list("Open", "gtk-open", "_Open File", "<control>O", "Open CSV", quit_cb),
-    list("Save", "gtk-save", "_Save as LaTeX Table", "<control>S", "Save CSV", save_LaTeX_cb),
-    list("Save2", "gtk-save", "_Save File", "<control>S", "Save2 CSV", save_cb),
+    list("Save", "gtk-save", "_Save as LaTeX Table", "<control>S", "Save Table", save_LaTeX_cb),
+    list("Save2", "gtk-save", "_Save File", "<control>S", "Save Results", save_cb),
     list("Exit", "gtk-quit", "E_xit", "<control>X", "Exit", quit_cb)
   )
   action_group <- RGtk2::gtkActionGroup("spreadsheetActions")
@@ -229,8 +229,9 @@ gui.results <- function(result, factors, dec, sep) {
   
 }
 
-#' Graphical User Interface (R Package RGtk2 needed) for the Function 'hrm_test': Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).
+#' Graphical User Interface for Testing Multi-Factor High-Dimensional Repeated Measures
 #' 
+#' @description Graphical User Interface (R Package RGtk2 needed) for the Function 'hrm_test': Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).
 #' @return The results can be saved as LaTeX Code or as plain text. Additionally a plot of the group profiles an be saved when using one whole- and one subplot factor. 
 #' @keywords export
 hrm.GUI <- function(){
@@ -572,13 +573,14 @@ hrm.GUI <- function(){
           }, warning = function(w) "", error = function(e) {GUI_error(e, "There is a problem with your formula for the response variable.")
             errorOccured <<- 1})
         }
- 
+        
 
         if(!is.na(alpha) & errorOccured == 0){
-          if(alpha > 0 & alpha < 1) {
+          if(alpha > 0 & alpha < 1) { 
             # if the input by the user is fine, then do the caluclation
             tryCatch({
-                result <- hrm_test(formula = formula, data = tmp, alpha = alpha, subject = subject )
+                object.hrm <-  hrm.test(formula = formula, data = tmp, alpha = alpha, subject = subject )
+                result <- object.hrm$result
                 
                 # determin which columns are whole- and subplot factors
                 dat <- model.frame(formula, tmp)
@@ -604,8 +606,8 @@ hrm.GUI <- function(){
                 factors <- list(colnames(dat)[wholeplot], colnames(dat)[subplot])
                 
                 # showing results
-                gui.results(result$test, factors, RGtk2::gtkEntryGetText(decEntry), RGtk2::gtkEntryGetText(sepEntry))
-              }, error = function(e) {GUI_error(e,NULL) 
+                gui.results(result, factors, RGtk2::gtkEntryGetText(decEntry), RGtk2::gtkEntryGetText(sepEntry))
+              }, error = function(e) {GUI_error(e, NULL) 
                 errorOccured <<- 1})
             
             # if there are only two factors; 1 whole- and 1 subplot-facor, then plot the profiles
@@ -617,9 +619,15 @@ hrm.GUI <- function(){
                 #dev.new() # show plot using new graphics device (i.e. separate window for plot); easer than drawing with cairoDevice
                 GUI_plot()
                 tryCatch({
-                  print(hrm.plot(data = tmp, group = groupFactor, factor1 = timeFactor, subject = subject, response = responseVariable, xlab = "dimension", ylab = "means"))
+                  print(plot.HRM(object.hrm))
+                  #print(hrm.plot(data = tmp, group = groupFactor, factor1 = timeFactor, subject = subject, response = responseVariable, xlab = "dimension", ylab = "means"))
                 }, error = function(e) "", warning = function(w)  "")
               }
+            } else if(nfactors == 1 & !is.null(timeFactor) & errorOccured == 0) {
+                GUI_plot()
+                tryCatch({
+                  print(plot.HRM(object.hrm))
+                }, error = function(e) "", warning = function(w)  "")
             }
           } else {
             GUI_error(NULL, "The type-I error rate needs to be within the interval (0, 1).")

@@ -2,10 +2,10 @@
 % Please edit documentation in R/plot.R
 \name{hrm.plot}
 \alias{hrm.plot}
-\title{Plots profiles of the groups.}
+\title{Plots profiles of the groups in case of one whole- and one subplot-factor.}
 \usage{
 hrm.plot(data, group, factor1, subject, response, xlab = "dimension",
-  ylab = "means")
+  ylab = "mean", legend = TRUE, legend.title = NULL)
 }
 \arguments{
 \item{data}{A data.frame containing the data}
@@ -21,6 +21,10 @@ hrm.plot(data, group, factor1, subject, response, xlab = "dimension",
 \item{xlab}{label of the x-axis of the plot}
 
 \item{ylab}{label of the y-axis of the plot}
+
+\item{legend}{logical indicating if a legend should be plotted}
+
+\item{legend.title}{title of the legend}
 }
 \value{
 Plots profiles of the groups.
@@ -34,6 +38,6 @@ head(EEG)
 
 # plots profiles according to groups with
 # subplot-factor called dimension
-hrm.plot(EEG,"group", "dimension", "subject", "value")
+plot(hrm.test(value ~ group*dimension, subject = "subject", data = EEG))
 }
-\keyword{export}
+\keyword{internal}

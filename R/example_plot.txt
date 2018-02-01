@@ -3,4 +3,4 @@ head(EEG)
 
 # plots profiles according to groups with
 # subplot-factor called dimension
-hrm.plot(EEG,"group", "dimension", "subject", "value")
+plot(hrm.test(value ~ group*dimension, subject = "subject", data = EEG))

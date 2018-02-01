@@ -8,7 +8,7 @@ hrm.2w.2f(X, alpha, group, subgroup, factor1, factor2, subject, data, H,
   text = "")
 }
 \arguments{
-\item{X}{list containing the data matrices of all groups}
+\item{X}{dataframe containing the data in the long table format}
 
 \item{alpha}{alpha level used for the test}
 

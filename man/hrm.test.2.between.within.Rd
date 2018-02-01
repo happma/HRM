@@ -4,11 +4,11 @@
 \alias{hrm.test.2.between.within}
 \title{Test for no main effects and interaction effects of two crossed between-subject factors and one within-subject factor}
 \usage{
-hrm.test.2.between.within(X, alpha, group, subgroup, factor1, factor2, subject,
-  data, testing = rep(1, 15), formula)
+\method{hrm.test}{2.between.within}(X, alpha, group, subgroup, factor1, factor2,
+  subject, data, testing = rep(1, 15), formula)
 }
 \arguments{
-\item{X}{list containing the data matrices of all groups}
+\item{X}{dataframe containing the data in the long table format}
 
 \item{alpha}{alpha level used for the test}
 
