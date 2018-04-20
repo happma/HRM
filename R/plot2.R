@@ -1,3 +1,12 @@
+####################################################################################################################################
+### Filename:    plot2.R
+### Description: S3 method for plotting profile curves
+### 
+###
+###
+####################################################################################################################################
+
+
 #' Plotting Profile Curves
 #' 
 #' @description Plotting profile curves for up to one whole- or subplot-factor
@@ -9,7 +18,7 @@
 #' @param ... Further arguments passed to the 'plot' function
 #' @example R/example_plot.txt
 #' @keywords export
-plot.HRM <- function(x, xlab = "dimension", ylab = "mean", legend = TRUE, legend.title = NULL, ...) {
+plot.HRM <- function(x, xlab = "time", ylab = "mean", legend = TRUE, legend.title = "", ...) {
   
   stopifnot(is.logical(legend), is.character(xlab), is.character(ylab), class(x) == "HRM")
   
@@ -28,6 +37,13 @@ plot.HRM <- function(x, xlab = "dimension", ylab = "mean", legend = TRUE, legend
     }
     
     pl <- hrm.plot(data = x$data, group = group , factor1 = factor1, subject = x$subject, response = as.character(x$formula[[2]]), xlab=xlab, ylab=ylab, legend = legend, legend.title = legend.title )
+    
+    # adding additional arguments such as 'theme_bw' to the ggplot2 object
+    if(!missing(...)){
+      pl <- tryCatch(pl + ..., error = function(e) {print(e) 
+        return(pl)
+      }) 
+    }
     return(pl)
     
   } else if(is.null(x$formula)){
@@ -47,7 +63,8 @@ plot.HRM <- function(x, xlab = "dimension", ylab = "mean", legend = TRUE, legend
           geom_line(data=means, aes(x=means$dimension, y=means$value,group=means$group,colour=means$group)) +
           geom_point(data=means, aes(x=means$dimension, y=means$value,group=means$group,colour=means$group),size=1.5) +
           xlab(xlab) + 
-          ylab(ylab)   
+          ylab(ylab)
+
     
     if(!legend){
       pl <- pl + theme(legend.position = "none") 
@@ -58,6 +75,14 @@ plot.HRM <- function(x, xlab = "dimension", ylab = "mean", legend = TRUE, legend
             pl <- pl + theme(legend.title = element_blank())
         }
         pl <- pl + theme(legend.background = element_rect()) 
+    }
+
+    
+    # adding additional arguments such as 'theme_bw' to the ggplot2 object
+    if(!missing(...)){
+      pl <- tryCatch(pl + ..., error = function(e) {print(e) 
+        return(pl)
+      }) 
     }
 
     

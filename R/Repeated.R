@@ -9,8 +9,8 @@
 #' EEG data of 160 subjects
 #' 
 #' A dataset containing EEG data (Staffen et al., 2014) of 160 subjects, 4 variables are measured at ten different locations.
-#' The columns are as follows:
 #' 
+#' The columns are as follows:
 #' \itemize{
 #'   \item group. Diagnostic group of the subject: Alzheimer's Disease (AD), Mild Cognitive Impairment (MCI), Subject Cognitive Complaints (SCC+, SCC-).
 #'   \item value. Measured data of a subject at a specific variable and region.
@@ -34,7 +34,6 @@
 #' @param data A list containing the data matrices of all groups. The rows are the independent subjects, these observations are assumed to be multivariate normally distributed. The columsn of all matrices need to be in the same order.
 #' @param alpha alpha level used for the test
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
-#' @example R/example_1.txt
 #' @keywords internal
 hrm.test.matrices <- function(data, alpha=0.05){
   
@@ -102,12 +101,14 @@ hrm.test.matrices <- function(data, alpha=0.05){
 #' @param formula formula object from the user input
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = rep(1,4), formula ){
+hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = rep(1,4), formula, nonparametric ){
+  
+  ranked <- NULL
 
-  temp0 <- if(testing[1]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "A", paste(as.character(group), " (weighted)"))}
-  temp1 <- if(testing[2]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "Au", paste(as.character(group)))}
-  temp2 <- if(testing[3]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "B", paste(as.character(factor1)))}
-  temp3 <- if(testing[4]) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "AB", paste(as.character(group), ":",as.character(factor1)))}
+  temp0 <- if(testing[1]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "A", paste(as.character(group), " (weighted)"), nonparametric, ranked)}
+  temp1 <- if(testing[2]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "Au", paste(as.character(group)), nonparametric, ranked)}
+  temp2 <- if(testing[3]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric, ranked)}
+  temp3 <- if(testing[4]) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "AB", paste(as.character(group), ":",as.character(factor1)), nonparametric, ranked)}
   
   output <- list()
   output$result <- rbind(temp0, temp1, temp2, temp3)
@@ -116,6 +117,7 @@ hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = r
   output$subject <- subject
   output$factors <- list(c(group), c(factor1))
   output$data <- X
+  output$nonparametric <- nonparametric
   class(output) <- "HRM"
   
   return (output)
@@ -134,13 +136,15 @@ hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = r
 #' @param formula formula object from the user input
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data, testing = rep(1,7), formula ){
+hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data, testing = rep(1,7), formula, nonparametric ){
   
+  ranked <- NULL
+
   # create list for storing results; NULL used, because it is ignored by rbind
   temp <- list(NULL, NULL, NULL, NULL, NULL, NULL, NULL)
   for(i in 1:7){
     if(testing[i]) {
-      temp[[i]] <- hrm.1w.2f(X, alpha, group , factor1, factor2, subject, data, H = i )
+      temp[[i]] <- hrm.1w.2f(X, alpha, group , factor1, factor2, subject, data, H = i, "", nonparametric, ranked )
     }
   }
   
@@ -151,6 +155,7 @@ hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data,
   output$subject <- subject
   output$factors <- list(c(group), c(factor1, factor2))
   output$data <- X
+  output$nonparametric <- nonparametric
   class(output) <- "HRM"
   
   return (output)
@@ -171,13 +176,15 @@ hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data,
 #' @param formula formula object from the user input
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data, testing = rep(1,7), formula ){
+hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data, testing = rep(1,7), formula, nonparametric ){
 
+  ranked <- NULL
+  
   # create list for storing results; NULL used, because it is ignored by rbind
   temp <- list(NULL, NULL, NULL, NULL, NULL, NULL, NULL)
   for(i in 1:7){
     if(testing[i]) {
-      temp[[i]] <- hrm.2w.1f(X, alpha, group , subgroup, factor, subject, data, H = i )
+      temp[[i]] <- hrm.2w.1f(X, alpha, group , subgroup, factor, subject, data, H = i, "", nonparametric, ranked )
     }
   }
   
@@ -188,6 +195,7 @@ hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data
   output$subject <- subject
   output$factors <- list(c(group, subgroup), c(factor))
   output$data <- X
+  output$nonparametric <- nonparametric
   class(output) <- "HRM"
  
   return (output)
@@ -208,13 +216,15 @@ hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data
 #' @param formula formula object from the user input
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, factor2, subject, data, testing = rep(1,15), formula ){
+hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, factor2, subject, data, testing = rep(1,15), formula, nonparametric ){
+  
+  ranked <- NULL
   
   # create list for storing results; NULL used, because it is ignored by rbind
   temp <- list(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
   for(i in 1:15){
     if(testing[i]) {
-      temp[[i]] <- hrm.2w.2f(X, alpha, group , subgroup, factor1, factor2, subject, data, H = i )
+      temp[[i]] <- hrm.2w.2f(X, alpha, group , subgroup, factor1, factor2, subject, data, H = i, "", nonparametric, ranked )
     }
   }
   output <- list()
@@ -224,6 +234,7 @@ hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, facto
   output$subject <- subject
   output$factors <- list(c(group, subgroup), c(factor1, factor2))
   output$data <- X
+  output$nonparametric <- nonparametric
   class(output) <- "HRM"
   return (output)
 }
@@ -243,22 +254,25 @@ hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, facto
 #' @param formula formula object from the user input
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.test.3.between <- function(X, alpha, group , factor1, factor2, factor3, subject, data, testing = rep(1,15), formula ){
-  temp0 <- if(testing[1]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3, subject, data, P, J, J, J,  paste(as.character(group) ) )}
-  temp1 <- if(testing[2]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, P, J, J, paste(as.character(factor1)) )}
-  temp2 <- if(testing[3]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, J, P, J, paste(as.character(factor2)) )}
-  temp3 <- if(testing[4]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, J, J, P, paste(as.character(factor3)) )}
-  temp4 <- if(testing[5]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, P, J, J, paste(as.character(group),":",as.character(factor1)) )} 
-  temp5 <- if(testing[6]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, J, P, J, paste(as.character(group),":",as.character(factor2)) )}
-  temp6 <- if(testing[7]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, J, J, P, paste(as.character(group),":",as.character(factor3)) )}
-  temp7 <- if(testing[8]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, P, P, J, paste(as.character(factor1),":",as.character(factor2)) )}
-  temp8 <- if(testing[9]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, P, J, P, paste(as.character(factor1),":",as.character(factor3)) )}
-  temp9 <- if(testing[10]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, J, P, P,paste(as.character(factor2),":",as.character(factor3)) )}
-  temp10 <- if(testing[11]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, P, P, J, paste(as.character(group),":",as.character(factor1), ":", as.character(factor2)) )}
-  temp11 <- if(testing[12]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, P, J, P, paste(as.character(group),":",as.character(factor1), ":", as.character(factor3)) )}
-  temp12 <- if(testing[13]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, J, P, P, paste(as.character(group),":",as.character(factor2), ":", as.character(factor3)) )}
-  temp13 <- if(testing[14]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, J, P, P, P, paste(as.character(factor1),":",as.character(factor2), ":", as.character(factor3)) )}
-  temp14 <- if(testing[15]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, P, P, P, P, paste(as.character(group),":",as.character(factor1), ":", as.character(factor2), ":", as.character(factor3)) )}
+hrm.test.3.between <- function(X, alpha, group , factor1, factor2, factor3, subject, data, testing = rep(1,15), formula, nonparametric ){
+  
+  ranked <- NULL
+  
+  temp0 <- if(testing[1]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3, subject, data, "P", "J", "J", "J",  paste(as.character(group) ), nonparametric, ranked )}
+  temp1 <- if(testing[2]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "J", "J", paste(as.character(factor1)), nonparametric, ranked )}
+  temp2 <- if(testing[3]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "P", "J", paste(as.character(factor2)), nonparametric, ranked )}
+  temp3 <- if(testing[4]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "J", "P", paste(as.character(factor3)), nonparametric, ranked )}
+  temp4 <- if(testing[5]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "J", "J", paste(as.character(group),":",as.character(factor1)), nonparametric, ranked )} 
+  temp5 <- if(testing[6]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "P", "J", paste(as.character(group),":",as.character(factor2)), nonparametric, ranked )}
+  temp6 <- if(testing[7]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "J", "P", paste(as.character(group),":",as.character(factor3)), nonparametric, ranked )}
+  temp7 <- if(testing[8]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "P", "J", paste(as.character(factor1),":",as.character(factor2)), nonparametric, ranked )}
+  temp8 <- if(testing[9]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "J", "P", paste(as.character(factor1),":",as.character(factor3)), nonparametric, ranked )}
+  temp9 <- if(testing[10]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "P", "P",paste(as.character(factor2),":",as.character(factor3)), nonparametric, ranked )}
+  temp10 <- if(testing[11]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "P", "J", paste(as.character(group),":",as.character(factor1), ":", as.character(factor2)), nonparametric, ranked )}
+  temp11 <- if(testing[12]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "J", "P", paste(as.character(group),":",as.character(factor1), ":", as.character(factor3)), nonparametric, ranked )}
+  temp12 <- if(testing[13]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "P", "P", paste(as.character(group),":",as.character(factor2), ":", as.character(factor3)), nonparametric, ranked )}
+  temp13 <- if(testing[14]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "P", "P", paste(as.character(factor1),":",as.character(factor2), ":", as.character(factor3)), nonparametric, ranked )}
+  temp14 <- if(testing[15]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "P", "P", paste(as.character(group),":",as.character(factor1), ":", as.character(factor2), ":", as.character(factor3)), nonparametric, ranked )}
   
   output <- list()
   output$result <- rbind(temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14)
@@ -267,210 +281,29 @@ hrm.test.3.between <- function(X, alpha, group , factor1, factor2, factor3, subj
   output$subject <- subject
   output$factors <- list(c(group), c(factor1, factor2, factor3))
   output$data <- X
+  output$nonparametric <- nonparametric
   class(output) <- "HRM"
   return (output)
 }
 
 
-#' Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).
+#' Test for Multi-Factor High-Dimensional Repeated Measures 
 #' 
-#' @param data A data.frame containing the data
-#' @param alpha alpha level used for the test
-#' @param group column name within the data frame data specifying the groups
-#' @param subgroup column name within the data frame data specifying the subgroups (crossed with groups)
-#' @param factor1 column name within the data frame data specifying the first subplot-factor
-#' @param factor2 column name within the data frame data specifying the the second subplot-factor
-#' @param factor3 column name within the data frame data specifying the the third subplot-factor
-#' @param subject column name within the data frame X identifying the subjects
-#' @param response column name within the data frame X containing the response variable
-#' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
-#' @keywords internal
-# hrm.test.dataframe <- function(data, alpha = 0.05, group , subgroup, factor1, factor2, factor3, subject, response, ... ){
-#   
-#   .Deprecated("hrm.test", package=NULL,
-#                old = as.character(sys.call(sys.parent()))[1L])
-#   
-#   temp <- data
-#   data <- response
-#   X <- temp
-# 
-#   if(!missing(factor1) & !missing(factor2) & !missing(factor3) & !missing(group)  & !missing(subgroup)  ){
-#     stop("The maximum number of factors that can be used is four.")
-#   }
-# 
-#   if(missing(X) || !is.data.frame(X)){
-#     stop("dataframe needed")
-#   }
-# 
-#   if(missing(subject) || !is.character(subject)){
-#     stop("subject column name not specified")
-#   }
-# 
-#   if(missing(data) || !is.character(data)){
-#     stop("data column name not specified")
-#   }
-# 
-#   if(sum(is.na(X[,data]))>=1){
-#     warning("Your data contains missing values!")
-#   }
-# 
-#   if(!is.double(alpha)){
-#     stop("alpha level needs to be a number between 0 and 1")
-#   }
-#   if(is.double(alpha)){
-#     if(alpha > 1 || alpha < 0){
-#       stop("alpha level needs to be a number between 0 and 1")
-#     }
-#   }
-#   dat <- X
-#   dat <- data.frame(dat, subj = X[,subject])
-#   s1<-subset(dat, dat$subj==dat$subj[1])
-#   measurements <- dim(s1)[1]
-#   countSubplotFactor <- nlevels(s1[,factor1])
-#   if(!missing(factor2)){
-#     countSubplotFactor <- countSubplotFactor*nlevels(s1[,factor2])
-#   }
-#   if(!missing(factor3)){
-#     countSubplotFactor <- countSubplotFactor*nlevels(s1[,factor3])
-#   }
-#   if(countSubplotFactor==0 & measurements == 1){
-#     countSubplotFactor <- 1
-#   }
-#   if(!(measurements == countSubplotFactor)){
-#     stop(paste("The number of repeated measurements per subject (", measurements, ") is uneqal to the number of levels of the subplot factors (", countSubplotFactor, ")."))
-#   }
-# 
-#   # case: no subplot, one wholeplot
-#   if(missing(factor2) & missing(subgroup) & missing(factor3) & missing(factor1) & !missing(group)){
-# 
-#     if(!is.factor(X[,group])){
-#       stop(paste("The column ", group, " is not a factor." ))
-#     }
-# 
-#     return(hrm.test.1.none(X, alpha , group, subject, data, formula = NULL ))
-#   }
-# 
-#   # case: one subplot, no wholeplot
-#   if(missing(factor2) & missing(subgroup) & missing(factor3) & missing(group) & !missing(factor1)){
-# 
-#     if(!is.factor(X[,factor1])){
-#       stop(paste("The column ", factor1, " is not a factor." ))
-#     }
-# 
-#     return(hrm.test.1.one(X, alpha , factor1, subject, data, formula = NULL ))
-#   }
-# 
-# 
-#   if(missing(factor2) & missing(subgroup) & missing(factor3)){
-#     if(!is.factor(X[,group])){
-#       stop(paste("The column ", group, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor1])){
-#       stop(paste("The column ", factor1, " is not a factor." ))
-#     }
-# 
-#     return(hrm.test.2.one(X, alpha, group , factor1, subject, data, formula = NULL ))
-#   }
-# 
-# 
-#   if(missing(factor2) & !missing(subgroup) & missing(factor3)){
-#     if(!is.character(subgroup)){
-#       stop("subgroup column name not specified")
-#     }
-#     if(!is.factor(X[,group])){
-#       stop(paste("The column ", group, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,subgroup])){
-#       stop(paste("The column ", subgroup, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor1])){
-#       stop(paste("The column ", factor1, " is not a factor." ))
-#     }
-#     return(hrm.test.2.between(X, alpha, group , subgroup, factor1, subject, data, formula = NULL))
-#   }
-# 
-#   if(!missing(factor2) & missing(subgroup) & missing(factor3)){
-#     if(!is.character(factor2)){
-#       stop("factor2 column name not specified")
-#     }
-#     if(!is.factor(X[,group])){
-#       stop(paste("The column ", group, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor2])){
-#       stop(paste("The column ", factor2, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor1])){
-#       stop(paste("The column ", factor1, " is not a factor." ))
-#     }
-#     return(hrm.test.2.within(X, alpha, group , factor1, factor2, subject, data, formula = NULL ))
-#   }
-# 
-#   if(!missing(factor2) & !missing(subgroup) & missing(factor3)){
-#     if(!is.character(factor2)){
-#       stop("factor2 column name not specified")
-#     }
-#     if(!is.character(subgroup)){
-#       stop("subgroup column name not specified")
-#     }
-#     if(!is.factor(X[,group])){
-#       stop(paste("The column ", group, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,subgroup])){
-#       stop(paste("The column ", subgroup, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor1])){
-#       stop(paste("The column ", factor1, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor2])){
-#       stop(paste("The column ", factor2, " is not a factor." ))
-#     }
-#     return(hrm.test.2.between.within(X, alpha, group , subgroup, factor1, factor2, subject, data, formula = NULL))
-#   }
-#   if(!missing(factor1) & !missing(factor2) & !missing(factor3) & !missing(group)  & missing(subgroup)  ){
-#     if(!is.character(factor1)){
-#       stop("factor1 column name not specified")
-#     }
-#     if(!is.character(factor2)){
-#       stop("factor2 column name not specified")
-#     }
-#     if(!is.character(factor3)){
-#       stop("factor3 column name not specified")
-#     }
-#     if(!is.character(group)){
-#       stop("group column name not specified")
-#     }
-#     if(!is.factor(X[,group])){
-#       stop(paste("The column ", group, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor1])){
-#       stop(paste("The column ", factor1, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor2])){
-#       stop(paste("The column ", factor2, " is not a factor." ))
-#     }
-#     if(!is.factor(X[,factor3])){
-#       stop(paste("The column ", factor3, " is not a factor." ))
-#     }
-#     formula <- as.formula(paste(data, "~", group, "*", factor1, "*", factor2, "*", factor3))
-# 
-#     return(hrm_test(formula=formula,alpha=alpha,subject=subject, data=X ))
-# 
-#   }
-# 
-# }
-
-
-
-#' Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).
-#' 
-#' @param data A data.frame containing the data. The columns containing the factor variables need to have the type 'factor'. One column is needed to indentify the subjects.
-#' @param alpha alpha level used for the test
+#' @description Performing main and interaction effects of up to three whole- or subplot-factors. In total, a maximum of four factors can be used. There are two different S3 methods available. The first method requires a list of matrices in the wide table format. The second methodl requres a data.frame in the long table format.
+#' @param data Either a data.frame (one observation per row) or a list with matrices (one subject per row) for all groups containing the data
 #' @param formula A model formula object. The left hand side contains the response variable and the right hand side contains the whole- and subplot factors.
 #' @param subject column name within the data frame X identifying the subjects
-#' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
+#' @param alpha alpha level used for calculating the critical value for the test
+#' @return Returns an object from class HRM containing
+#' @return \item{result}{A dataframe with the results from the hypotheses tests.}
+#' @return \item{formula}{The formula object which was used.}
+#' @return \item{alpha}{The type-I error rate which was used.}
+#' @return \item{subject}{The column name identifying the subjects.}
+#' @return \item{factors}{A list containing the whole- and subplot factors.}
+#' @return \item{data}{The data.frame or list containing the data.}
 #' @keywords internal
-hrm_test <- function(formula, data, alpha = 0.05,  subject ){
-  
+hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametric ){
+
   if(missing(data) || !is.data.frame(data)){
     stop("dataframe needed")
   }
@@ -485,15 +318,26 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
       stop("alpha level needs to be a number between 0 and 1")
     }
   }
+  
+  # convert whole/subplot factor columns to type factor
+  tryCatch({ 
+    nfactors <- length(attr(terms.formula(formula), "variables"))
+    for(i in 3:nfactors){
+      cname <- as.character(attr(terms.formula(formula), "variables")[[i]])
+      if( !is.factor( data[,cname] ) ) {
+        data[,cname] <- as.factor(data[,cname])
+      }
+    }
+  }, warning = function(w) "", error = function(e) { paste("One of the factor columns could not be converted to a factor variable." ) } )
+  
   dat <- model.frame(formula, data)
   dat2 <- data.frame(dat,subj=data[,subject])
+
   m <- ncol(dat)
   
   if(!is.numeric(dat[,1])){
     stop("Response variable needs to be numeric!")
   }
-  
-  
   
   # find out, in which columns are the wholeplot or subplot factors
   s1<-subset(dat2, dat2$subj==dat2$subj[1])
@@ -515,15 +359,16 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
   }
   wholeplot <- which(wholeplot==1)
   subplot <- which( subplot==1)
-
+  
+  
   if(!(measurements == countSubplotFactor)){
     stop(paste("The number of repeated measurements per subject (", measurements, ") is uneqal to the number of levels of the subplot factors (", countSubplotFactor, ")."))
   }
   if(length(wholeplot)>2){
     stop("Too many factors are used! Only two wholelot-factors are supported.")
   }
-  if(length(subplot)>3){
-    stop("Too many factors are used! Only three subplotlot-factors are supported.")
+  if(length(subplot)>6){
+    stop("Too many factors are used! Only five subplotlot-factors are supported.")
   }
   if(length(wholeplot)>1 & length(subplot)==3){
     stop("Too many factors are used! Only one whole- and three subplot-factors are supported.")
@@ -531,8 +376,8 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
   if(length(subplot)<1 & length(wholeplot)>1){
     stop("The model needs at least one within-subject factor.")
   }
-  if(length(subplot)>1 & length(wholeplot)<1){
-    stop("The model supports only one subplot-factor when using no wholeplot-factors.")
+  if(length(subplot)>5 & length(wholeplot)<1){
+    stop("The model supports up to five subplot-factor when using no wholeplot-factors.")
   }
   
   # Case: no wholeplot, one subpot factor
@@ -543,9 +388,108 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     subplot<-colnames(dat2[,subplot])
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.1.one(X, alpha , factor1, subject, data, formula ))   
+    return(hrm.test.1.one(X, alpha , factor1, subject, data, formula, nonparametric ))   
     
   }
+  
+  # Case: no wholeplot, two subpot factor
+  if(length(wholeplot) < 1 & length(subplot) == 2){
+    factor1 <- colnames(dat2)[subplot[1]]
+    factor2 <- colnames(dat2)[subplot[2]]
+    x<-attributes(terms.formula(formula))$term.labels
+    
+    testing <- rep(0,3)
+    for(i in 1:length(x)){
+      
+      tmp <- strsplit(x[i],":")
+      l <- length(tmp[[1]])
+      
+      # interaction hypothesis of 2 factors
+      if(l == 2){testing[3]<-1}
+      else{
+        if(factor1 == x[i]){
+          testing[1]<-1
+        }
+        else if(factor2 == x[i]){testing[2]<-1}
+      }
+    }
+    
+    subplot<-colnames(dat2[,subplot])
+    X<-data
+    data <- colnames(dat)[1]
+    return(hrm.test.2.two(X, alpha , factor1, factor2, subject, data, formula, testing, nonparametric ))   
+    
+  }
+  
+  # Case: no wholeplot, three subpot factor
+  if(length(wholeplot) < 1 & length(subplot) == 3){
+    factor1 <- colnames(dat2)[subplot[1]]
+    factor2 <- colnames(dat2)[subplot[2]]
+    factor3 <- colnames(dat2)[subplot[3]]
+    x<-attributes(terms.formula(formula))$term.labels
+    
+    testing <- rep(0,2^3-1)
+    testing[1:3] <- 1
+    for(i in 1:length(x)){
+      
+      tmp <- strsplit(x[i],":")
+      l <- length(tmp[[1]])
+      
+      # interaction hypothesis of 2 factors
+      if(l == 2){ 
+        if(grepl(factor1,x[i])){
+          if(grepl(factor2,x[i])){
+            testing[4] <- 1
+          } else {
+            testing[5] <- 1
+          }
+        } else {
+          testing[6] <- 1
+        }
+      }
+      
+      # interaction hypothesis of 3 factors
+      if(l == 3){
+        testing[7] <- 1
+      }
+    }
+    
+    subplot<-colnames(dat2[,subplot])
+    X<-data
+    data <- colnames(dat)[1]
+    return(hrm.test.3.three(X, alpha , factor1, factor2, factor3, subject, data, formula, testing, nonparametric ))   
+    
+  }
+  
+  
+  # Case: no wholeplot, four subpot factor
+  if(length(wholeplot) < 1 & length(subplot) == 4){
+    factor1 <- colnames(dat2)[subplot[1]]
+    factor2 <- colnames(dat2)[subplot[2]]
+    factor3 <- colnames(dat2)[subplot[3]]
+    factor4 <- colnames(dat2)[subplot[4]]
+    x<-attributes(terms.formula(formula))$term.labels
+    subplot<-colnames(dat2[,subplot])
+    X<-data
+    data <- colnames(dat)[1]
+    return(hrm.test.4.four(X, alpha , factor1, factor2, factor3, factor4, subject, data, formula, testing = rep(1,2^4-1), nonparametric ))   
+    
+  }
+
+  # Case: no wholeplot, five subpot factor
+  if(length(wholeplot) < 1 & length(subplot) == 5){
+    factor1 <- colnames(dat2)[subplot[1]]
+    factor2 <- colnames(dat2)[subplot[2]]
+    factor3 <- colnames(dat2)[subplot[3]]
+    factor4 <- colnames(dat2)[subplot[4]]
+    factor5 <- colnames(dat2)[subplot[5]]
+    x<-attributes(terms.formula(formula))$term.labels
+    subplot<-colnames(dat2[,subplot])
+    X<-data
+    data <- colnames(dat)[1]
+    return(hrm.test.5.five(X, alpha , factor1, factor2, factor3, factor4, factor5, subject, data, formula, testing = rep(1,2^5-1), nonparametric ))   
+    
+  }  
   
   # Case: one wholeplot, no subpot factor
   if(length(wholeplot) == 1 & length(subplot) < 1){
@@ -555,7 +499,7 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     wholeplot<-colnames(dat2[,group])
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.1.none(X, alpha , group, subject, data, formula ))  
+    return(hrm.test.1.none(X, alpha , group, subject, data, formula, nonparametric ))  
   
   }
   
@@ -587,7 +531,7 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     }
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.2.one(X, alpha, group , factor1, subject, data, testing, formula ))   
+    return(hrm.test.2.one(X, alpha, group , factor1, subject, data, testing, formula, nonparametric ))   
   }
   
   # Case: 2 wholeplot, 1 subplot factor
@@ -634,7 +578,7 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     }
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.2.between(X, alpha, group , subgroup, factor1, subject, data, testing, formula )) 
+    return(hrm.test.2.between(X, alpha, group , subgroup, factor1, subject, data, testing, formula, nonparametric )) 
   }
   
   # Case: 1 wholeplot, 2 subplot factors
@@ -679,7 +623,7 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     }
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.2.within(X, alpha, group , factor1, factor2, subject, data, testing, formula ))
+    return(hrm.test.2.within(X, alpha, group , factor1, factor2, subject, data, testing, formula, nonparametric ))
   }
   
   # Case: 1 wholeplot, 3 subplot factors
@@ -768,7 +712,7 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     }
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.3.between(X, alpha, group , factor1, factor2, factor3, subject, data, testing, formula ))
+    return(hrm.test.3.between(X, alpha, group , factor1, factor2, factor3, subject, data, testing, formula, nonparametric ))
   }
   
   
@@ -849,6 +793,6 @@ hrm_test <- function(formula, data, alpha = 0.05,  subject ){
     }
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.2.between.within(X, alpha, group , subgroup, factor1, factor2, subject, data, testing, formula ))
+    return(hrm.test.2.between.within(X, alpha, group , subgroup, factor1, factor2, subject, data, testing, formula, nonparametric ))
   }
 }
