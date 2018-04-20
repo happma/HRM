@@ -4,8 +4,8 @@
 \alias{hrm.test.2.within}
 \title{Test for no main effects and interactino effects of one between-subject factor and two crossed within-subject factors}
 \usage{
-\method{hrm.test}{2.within}(X, alpha, group, factor1, factor2, subject, data,
-  testing = rep(1, 7), formula)
+hrm.test.2.within(X, alpha, group, factor1, factor2, subject, data,
+  testing = rep(1, 7), formula, nonparametric)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}

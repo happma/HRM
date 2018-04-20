@@ -1,7 +1,7 @@
 ####################################################################################################################################
 ### Filename:    f2_old.R
 ### Description: Functions for testing when using one whole- and one subplotfactor; outdated functions only used for compatibility
-###              within the function hrm.test.matrix
+###              within the function hrm.test.matrices
 ###
 ###
 ####################################################################################################################################

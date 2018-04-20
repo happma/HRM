@@ -20,7 +20,7 @@
 #' @return Plots profiles of the groups.
 #' @example R/example_plot.txt
 #' @keywords internal
-hrm.plot <- function(data, group , factor1, subject, response, xlab="dimension", ylab="mean", legend = TRUE, legend.title = NULL ){
+hrm.plot <- function(data, group , factor1, subject, response, xlab="time", ylab="mean", legend = TRUE, legend.title = NULL ){
   X<-data
   data<-response
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),is.character(factor1),is.character(data),is.character(xlab),is.character(ylab))
@@ -53,7 +53,7 @@ hrm.plot <- function(data, group , factor1, subject, response, xlab="dimension",
   }
   
   colnames(means) <- c("dimension",groupnames)
-  
+
   means <- melt(means, id.vars="dimension")
   colnames(means) <- c("dimension", "group", "value")
 

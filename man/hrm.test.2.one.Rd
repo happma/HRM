@@ -4,8 +4,8 @@
 \alias{hrm.test.2.one}
 \title{Test for no main effects and interactino effects of one between-subject factor and one crossed within-subject factors}
 \usage{
-\method{hrm.test}{2.one}(X, alpha, group, factor1, subject, data,
-  testing = rep(1, 4), formula)
+hrm.test.2.one(X, alpha, group, factor1, subject, data, testing = rep(1, 4),
+  formula, nonparametric)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}

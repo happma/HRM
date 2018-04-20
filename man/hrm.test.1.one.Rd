@@ -2,9 +2,9 @@
 % Please edit documentation in R/f1.R
 \name{hrm.test.1.one}
 \alias{hrm.test.1.one}
-\title{Test for main time effect (in case of no whole-plot factors)}
+\title{Test for one subplot factor}
 \usage{
-\method{hrm.test}{1.one}(X, alpha, factor1, subject, data, formula)
+hrm.test.1.one(X, alpha, factor1, subject, data, formula, nonparametric)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -23,6 +23,6 @@
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 }
 \description{
-Test for main time effect (in case of no whole-plot factors)
+Test for one subplot factor
 }
 \keyword{internal}

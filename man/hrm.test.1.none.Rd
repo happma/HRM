@@ -4,7 +4,7 @@
 \alias{hrm.test.1.none}
 \title{Test for main group effect (weighted/unweighted)}
 \usage{
-\method{hrm.test}{1.none}(X, alpha, group, subject, data, formula)
+hrm.test.1.none(X, alpha, group, subject, data, formula, nonparametric)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
