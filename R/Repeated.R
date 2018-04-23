@@ -83,6 +83,7 @@ hrm.test.matrices <- function(data, alpha=0.05){
   output$subject <- NULL
   output$factors <- list(NULL, NULL)
   output$data <- data
+  output$nonparametric <- FALSE
   class(output) <- "HRM"
   
   return (output)
