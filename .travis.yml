@@ -5,7 +5,11 @@ sudo: false
 cache: packages
 
 r_check_args: '--as-cran'
-      
+
+env:
+  matrix:
+    - _R_CHECK_FORCE_SUGGESTS_=false
+
 r_packages:
   - covr
 
