@@ -50,6 +50,8 @@ hrm.test.2.two <- function(X, alpha , factor1, factor2, subject, data, formula, 
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
 hrm.test.1.one <- function(X, alpha , factor1, subject, data, formula, nonparametric ){
+  
+  ranked <- NULL
 
   temp0 <- hrm.1f(X, alpha , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric)
 
@@ -98,7 +100,7 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonpar
   c <- 1
   n <- dim(X)[1]
 
-  if(nonparametric){
+  if(nonparametric & is.null(ranked)){
     X[,data := (rank(X[,data], ties.method = "average")-1/2)*1/(n[1]*a*d)]
   }
   

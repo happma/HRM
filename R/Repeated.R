@@ -110,9 +110,11 @@ hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = r
   temp1 <- if(testing[2]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "Au", paste(as.character(group)), nonparametric, ranked)}
   temp2 <- if(testing[3]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric, ranked)}
   temp3 <- if(testing[4]) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "AB", paste(as.character(group), ":",as.character(factor1)), nonparametric, ranked)}
+  temp4 <- if(testing[3] & (testing[1] | testing[2])) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "A|B", paste(as.character(group), "|",as.character(factor1)), nonparametric, ranked)}
+  temp5 <- if(testing[3] & (testing[1] | testing[2])) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "B|A", paste(as.character(factor1), "|",as.character(group)), nonparametric, ranked)}
   
   output <- list()
-  output$result <- rbind(temp0, temp1, temp2, temp3)
+  output$result <- rbind(temp0, temp1, temp2, temp3,temp4,temp5)
   output$formula <- formula
   output$alpha <- alpha
   output$subject <- subject
@@ -120,7 +122,7 @@ hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = r
   output$data <- X
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
-  
+  rownames(output$result) <- NULL
   return (output)
 }
 

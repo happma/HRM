@@ -41,29 +41,11 @@ hrm.2w.1f <- function(X, alpha, group , subgroup, factor, subject, data, H, text
   d <- nlevels(X[,factor])
   c <- 1
   n <- vec(table(X[,group], X[,subgroup])/d)
-  KGV <- Reduce(Lcm, n)
-  lambda <- KGV/n
 
-  if(max(lambda) <= 100 & max(n) <= 30 & nonparametric & is.null(ranked)){
-    
-    len <- dim(X)[1]
-    prData <- list(X,0)
-    z <- levels(X[,group])
-    zz <- levels(X[,subgroup])
 
-    # amplify data to artificially create balanced groups
-    for(i in 1:ag){
-      for(j in 1:asub){
-        n <- dim(X[group==z[i] & subgroup == zz[j]])[1]*1/d
-        lambda <- KGV/n
-        prData[[i+1]] <- X[group==z[i] & subgroup == zz[j]][rep(1:(n*d), each = (lambda-1)), ]
-      }
-    }
-    X <- rbindlist(prData)
-    X[,data]<- (rank(X[,data], ties.method = "average")-1/2)*1/(KGV*a*d)
-    
-    # select original observations from amplified data
-    X <- X[1:len,]
+  if(nonparametric & is.null(ranked)) {
+    X$grouping <- as.factor(paste(X[, group], X[, subgroup], sep=""))
+    X[,data:= 1/(sum(n)*d)*(psrank(X[,data], X[, grouping]) - 1/2)]
   }
   
 
@@ -79,12 +61,6 @@ hrm.2w.1f <- function(X, alpha, group , subgroup, factor, subject, data, H, text
     n[i] <- dim(X[[i]])[1]
   }
 
-  if((max(lambda) > 100 | max(n) > 30) & nonparametric & is.null(ranked)){
-    X <- pseudorank(X)
-    for(i in 1:a){
-      X[[i]] <- 1/(sum(n)*d*c)*(X[[i]] - 1/2)
-    }
-  }
   
   if(is.null(ranked)){
     eval.parent(substitute(ranked<-X))

@@ -1,17 +1,18 @@
 Package: HRM
-Version: 0.9.1
-Date: 2018-04-23
+Version: 0.9.4
+Date: 2018-07-08
 Title: High-Dimensional Repeated Measures
 Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
-                      email = "martin.happ@aon.at"),
+                      email = "martin.happ@aon.at",
+                      comment = c(ORCID = "0000-0003-0009-2665")),
 	      person("Harrar W. Solomon", role = "aut"),
 	      person("Arne C. Bathke", role = "aut"))
-Author: Martin Happ [aut, cre], Harrar W. Solomon [aut], Arne C. Bathke [aut]
 Maintainer: Martin Happ <martin.happ@aon.at>
 LazyData: true
 Depends: R (>= 3.4.0), MASS, matrixcalc, plyr, ggplot2
-Imports: xtable, reshape2, tcltk, data.table, pracma
-Suggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras
+Imports: xtable, reshape2, tcltk, data.table, pseudorank 
+Suggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras,
+    testthat
 Description: Methods for testing main and interaction effects in possibly
     high-dimensional parametric or nonparametric repeated measures in factorial designs.
     The observations of the subjects are assumed to be multivariate normal if using the parametric test.
@@ -19,4 +20,6 @@ Description: Methods for testing main and interaction effects in possibly
     It is possible to use up to 2 whole- and 3 subplot factors.
 License: GPL-2 | GPL-3
 RoxygenNote: 6.0.1
-NeedsCompilation: no
+URL: http://github.com/happma/HRM
+BugReports: http://github.com/happma/HRM/issues
+NeedsCompilation: yes

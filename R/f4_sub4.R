@@ -96,8 +96,8 @@ hrm.0w.4s <- function(X, alpha , factor1, factor2, factor3, factor4, subject, da
   c3 <- nlevels(X[,factor4])
   n <- dim(X)[1]
   
-  if(nonparametric & is.null(ranked)){ 
-    X[,data := (rank(X[,data], ties.method = "average")-1/2)*1/(n[1]*a*d*c*c2*c3)]
+  if(nonparametric & is.null(ranked)) {
+    X[,data:= 1/(sum(n)*d*c*c2*c3)*(rank(X[,data], ties.method="average") - 1/2)]
   }
   
   for(i in 1:a){

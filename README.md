@@ -1,8 +1,10 @@
 # HRM
 
 [![CRANstatus](https://www.r-pkg.org/badges/version/HRM)](https://cran.r-project.org/package=HRM)
-<a href="https://www.rpackages.io/package/HRM"><img src="https://www.rpackages.io/badge/HRM.svg" /></a>
 [![](https://cranlogs.r-pkg.org/badges/HRM)](https://cran.r-project.org/package=HRM)
+[![Travis-CI Build Status](https://travis-ci.org/happma/HRM.svg?branch=master)](https://travis-ci.org/happma/HRM)
+[![codecov](https://codecov.io/gh/happma/HRM/branch/master/graph/badge.svg)](https://codecov.io/gh/happma/HRM)
+
 
 R package for analysing high-dimensional repeated measures for factorial designs. 
 
