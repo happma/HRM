@@ -100,7 +100,7 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonpar
   c <- 1
   n <- dim(X)[1]
 
-  if(nonparametric & is.null(ranked)){
+  if(nonparametric){
     X[,data := (rank(X[,data], ties.method = "average")-1/2)*1/(n[1]*a*d)]
   }
   
