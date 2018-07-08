@@ -53,7 +53,7 @@ hrm.test.1.one <- function(X, alpha , factor1, subject, data, formula, nonparame
   
   ranked <- NULL
 
-  temp0 <- hrm.1f(X, alpha , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric)
+  temp0 <- hrm.1f(X, alpha , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric, ranked)
 
   output <- list()
   output$result <- rbind(temp0)
@@ -81,7 +81,7 @@ hrm.test.1.one <- function(X, alpha , factor1, subject, data, formula, nonparame
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonparametric){
+hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonparametric, ranked){
   
   stopifnot(is.data.frame(X),is.character(subject), is.character(factor1), alpha<=1, alpha>=0, is.logical(nonparametric))
   f <- 0
