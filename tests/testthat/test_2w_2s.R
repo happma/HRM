@@ -1,6 +1,6 @@
 context("2 Wholeplot, 2 Subplot")
 dat <- EEG
-EEG$value2 <- exp(EEG$value)
+dat$value2 <- exp(EEG$value)
 
 true_result <- c(3.035007, 116.290738, 2.672523, 1.657539)
 result <- as.numeric(HRM::hrm_test(value ~ group*sex*region*variable, subject = "subject", data = dat)$result[1, 2:5])
