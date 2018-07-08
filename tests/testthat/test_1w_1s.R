@@ -8,7 +8,7 @@ test_that("function hrm_test", {
 
 true_result <- c(3.077845, 137.450499, 2.648275, 5.318450)
 dat <- EEG
-dat$value2 <- exp(EEG$value)
+dat$value2 <- exp(dat$value)
 result <- as.numeric(HRM::hrm_test(value ~ group*dimension, subject = "subject", data = EEG, nonparametric = TRUE)$result[1, 2:5])
 result2 <- as.numeric(HRM::hrm_test(value2 ~ group*dimension, subject = "subject", data = dat, nonparametric = TRUE)$result[1, 2:5])
 
