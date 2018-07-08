@@ -13,7 +13,7 @@ result2 <- as.numeric(HRM::hrm_test(value ~ factor3*factor2*factor1, subject = "
 result_hrm <- HRM::hrm_test(value ~ factor1*factor2*factor3, subject = "subject", data = dat)
 
 test_that("function hrm_test", {
-  expect_equal(result2, true_result, tol = 1e-4)
+  expect_equal(result, true_result, tol = 1e-4)
   expect_equal(result2, true_result, tol = 1e-4)
   expect_output(print(result_hrm))
   expect_output(summary(result_hrm))
@@ -27,7 +27,7 @@ result2 <- as.numeric(HRM::hrm_test(value2 ~ factor3*factor2*factor1, subject = 
 result_hrm <- HRM::hrm_test(value ~ factor1*factor2*factor3, subject = "subject", data = dat, nonparametric = TRUE)
 
 test_that("function hrm_test nonparametric", {
-  expect_equal(result2, true_result, tol = 1e-4)
+  expect_equal(result, true_result, tol = 1e-4)
   expect_equal(result2, true_result, tol = 1e-4)
   expect_output(print(result_hrm))
   expect_output(summary(result_hrm))
