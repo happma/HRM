@@ -50,7 +50,17 @@ hrm_test(data=X, alpha=0.05)
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
 ```
 
+To get confidence intervals for each factor combination you can use the generic function 'confint' for an object of class 'HRM'. This function calculates simultaneous confidence intervals which maintains the family wise error rate (FWER).
+See the following code:
 
+``` r
+# using the EEG dataset
+z <- hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
+
+# calculate 99% confidence intervals
+confint(z, level = 0.99)
+
+```
 
 Additionally, the package can be used with a GUI.
 ``` r
