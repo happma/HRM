@@ -1,0 +1,7 @@
+# hrm.test with a data.frame using a 'formula' object
+
+# using the EEG dataset
+?EEG
+
+z <- hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
+confint(z)

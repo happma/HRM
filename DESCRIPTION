@@ -1,6 +1,6 @@
 Package: HRM
-Version: 0.9.4
-Date: 2018-07-08
+Version: 0.9.5
+Date: 2018-07-13
 Title: High-Dimensional Repeated Measures
 Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
                       email = "martin.happ@aon.at",
@@ -10,7 +10,7 @@ Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
 Maintainer: Martin Happ <martin.happ@aon.at>
 LazyData: true
 Depends: R (>= 3.4.0), MASS, matrixcalc, plyr, ggplot2
-Imports: xtable, reshape2, tcltk, data.table, pseudorank 
+Imports: xtable, reshape2, tcltk, data.table, pseudorank (>= 0.2.0)
 Suggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras,
     testthat
 Description: Methods for testing main and interaction effects in possibly

@@ -19,7 +19,7 @@
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text = "" , nonparametric, ranked){
+hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text = "" , nonparametric, ranked, varQGlobal){
   
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),is.character(factor1),is.character(factor2), alpha<=1, alpha>=0, is.logical(nonparametric))
   
@@ -164,6 +164,8 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
       direct <- direct.sum(direct, 1/n[i]*var(X[[i]]))
     }
   }
+  eval.parent(substitute(varQGlobal <- direct))
+  
   test <- (t(X_bar)%*%K_Hypothesis%*%X_bar)/(t(rep(1,dim(K_Hypothesis)[1]))%*%(K_Hypothesis*direct)%*%(rep(1,dim(K_Hypothesis)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text, df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))

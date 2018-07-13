@@ -21,7 +21,7 @@
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonparametric, ranked ){
+hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonparametric, ranked, varQGlobal ){
   
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),is.character(factor1), alpha<=1, alpha>=0, is.logical(nonparametric))
   f <- 0
@@ -62,7 +62,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   }
 
   # creating X_bar (list with a entries)
-  X_bar <- as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
+  X_bar <<- as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
 
   if(H=="A"){
     K <- 1/d*J(d)
@@ -151,29 +151,16 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   # critical value
   crit <- qf(1-alpha,f,f0)
   
-  # Test
+  # variance estimator
   direct <- direct.sum(1/n[1]*var(X[[1]]),1/n[2]*var(X[[2]]))
   if(a>2){
     for(i in 3:a) {
       direct <- direct.sum(direct, 1/n[i]*var(X[[i]]))
     }
   }
-  varQ <- direct
   
-  # co <- function(i,j){
-  #   m <- min(n[i],n[j])
-  #   return(cov(X[[i]][1:m,],X[[j]][1:m,])*1/n[i]*1/n[j])
-  # }
-  # 
-  # z <- vector("list",a)
-  # for(i in 1:a){
-  #   for(j in 1:a){
-  #     z[[i]] <- cbind(z[[i]], co(i,j))
-  #   }
-  #   z[[i]] <- as.data.table(z[[i]])
-  # }
-  # direct <- rbindlist(z)
-  # direct <- as.matrix(direct)
+  eval.parent(substitute(varQGlobal <- direct))
+
 
   test <- (t(X_bar)%*%K_AB%*%X_bar)/(t(rep(1,dim(K_AB)[1]))%*%(K_AB*direct)%*%(rep(1,dim(K_AB)[1])))
   p.value <- 1-pf(test,f,f0)

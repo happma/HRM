@@ -23,7 +23,7 @@
 #' @param subject column name of the data frame X identifying the subjects
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data, S, K1, K2, K3, hypothesis, nonparametric, ranked ){
+hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data, S, K1, K2, K3, hypothesis, nonparametric, ranked, varQGlobal ){
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),is.character(factor1),is.character(factor2), is.character(factor3),alpha<=1, alpha>=0, is.logical(nonparametric))
   f <- 0
   f0 <- 0
@@ -161,6 +161,8 @@ hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data
       direct <- direct.sum(direct, 1/n[i]*var(X[[i]]))
     }
   }
+  eval.parent(substitute(varQGlobal <- direct))
+  
   test <- (t(X_bar)%*%K_phi%*%X_bar)/(t(rep(1,dim(K_phi)[1]))%*%(K_phi*direct)%*%(rep(1,dim(K_phi)[1])))
   p.value<-1-pf(test,f,f0)
   output <- data.frame(hypothesis=hypothesis,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))

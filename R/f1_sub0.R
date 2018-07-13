@@ -19,9 +19,10 @@
 hrm.test.1.none <- function(X, alpha , group, subject, data, formula, nonparametric ){
   
   ranked <- NULL
+  varQGlobal <- NULL
   
-  temp0 <- hrm.1w.0f(X, alpha , group,  subject, data, "A", paste(as.character(group), " weighted"), nonparametric, ranked)
-  temp1 <- hrm.1w.0f(X, alpha , group,  subject, data, "Au", paste(as.character(group), " unweighted"), nonparametric, ranked)
+  temp0 <- hrm.1w.0f(X, alpha , group,  subject, data, "A", paste(as.character(group), " weighted"), nonparametric, ranked, varQGlobal)
+  temp1 <- hrm.1w.0f(X, alpha , group,  subject, data, "Au", paste(as.character(group), " unweighted"), nonparametric, ranked, varQGlobal)
   
   output <- list()
   output$result <- rbind(temp0, temp1)
@@ -30,6 +31,7 @@ hrm.test.1.none <- function(X, alpha , group, subject, data, formula, nonparamet
   output$subject <- subject
   output$factors <- list(c(group), c("none"))
   output$data <- X
+  output$var <- varQGlobal
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
   
@@ -49,7 +51,7 @@ hrm.test.1.none <- function(X, alpha , group, subject, data, formula, nonparamet
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.1w.0f <- function(X, alpha, group, subject, data, H, text, nonparametric, ranked ){
+hrm.1w.0f <- function(X, alpha, group, subject, data, H, text, nonparametric, ranked, varQGlobal ){
   
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),alpha<=1, alpha>=0, is.logical(nonparametric))
   f <- 0
@@ -171,6 +173,7 @@ hrm.1w.0f <- function(X, alpha, group, subject, data, H, text, nonparametric, ra
       direct <- direct.sum(direct, 1/n[i]*var(X[[i]]))
     }
   }
+  eval.parent(substitute(varQGlobal <- direct))
 
   test <- (t(X_bar)%*%K_A%*%X_bar)/(t(rep(1,dim(K_A)[1]))%*%(K_A*direct)%*%(rep(1,dim(K_A)[1])))
   p.value <- 1-pf(test,f,f0)

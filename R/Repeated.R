@@ -105,13 +105,14 @@ hrm.test.matrices <- function(data, alpha=0.05){
 hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = rep(1,4), formula, nonparametric ){
   
   ranked <- NULL
+  varQGlobal <- NULL
 
-  temp0 <- if(testing[1]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "A", paste(as.character(group), " (weighted)"), nonparametric, ranked)}
-  temp1 <- if(testing[2]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "Au", paste(as.character(group)), nonparametric, ranked)}
-  temp2 <- if(testing[3]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric, ranked)}
-  temp3 <- if(testing[4]) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "AB", paste(as.character(group), ":",as.character(factor1)), nonparametric, ranked)}
-  temp4 <- if(testing[3] & (testing[1] | testing[2])) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "A|B", paste(as.character(group), "|",as.character(factor1)), nonparametric, ranked)}
-  temp5 <- if(testing[3] & (testing[1] | testing[2])) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "B|A", paste(as.character(factor1), "|",as.character(group)), nonparametric, ranked)}
+  temp0 <- if(testing[1]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "A", paste(as.character(group), " (weighted)"), nonparametric, ranked, varQGlobal)}
+  temp1 <- if(testing[2]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "Au", paste(as.character(group)), nonparametric, ranked, varQGlobal)}
+  temp2 <- if(testing[3]) {hrm.1w.1f(X, alpha, group , factor1,  subject, data, "B", paste(as.character(factor1)), nonparametric, ranked, varQGlobal)}
+  temp3 <- if(testing[4]) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "AB", paste(as.character(group), ":",as.character(factor1)), nonparametric, ranked, varQGlobal)}
+  temp4 <- if(testing[3] & (testing[1] | testing[2])) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "A|B", paste(as.character(group), "|",as.character(factor1)), nonparametric, ranked, varQGlobal)}
+  temp5 <- if(testing[3] & (testing[1] | testing[2])) {hrm.1w.1f(X, alpha, group , factor1, subject, data, "B|A", paste(as.character(factor1), "|",as.character(group)), nonparametric, ranked, varQGlobal)}
   
   output <- list()
   output$result <- rbind(temp0, temp1, temp2, temp3,temp4,temp5)
@@ -120,6 +121,7 @@ hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = r
   output$subject <- subject
   output$factors <- list(c(group), c(factor1))
   output$data <- X
+  output$var <- varQGlobal
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
   rownames(output$result) <- NULL
@@ -142,12 +144,13 @@ hrm.test.2.one <- function(X, alpha, group , factor1, subject, data, testing = r
 hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data, testing = rep(1,7), formula, nonparametric ){
   
   ranked <- NULL
+  varQGlobal <- NULL
 
   # create list for storing results; NULL used, because it is ignored by rbind
   temp <- list(NULL, NULL, NULL, NULL, NULL, NULL, NULL)
   for(i in 1:7){
     if(testing[i]) {
-      temp[[i]] <- hrm.1w.2f(X, alpha, group , factor1, factor2, subject, data, H = i, "", nonparametric, ranked )
+      temp[[i]] <- hrm.1w.2f(X, alpha, group , factor1, factor2, subject, data, H = i, "", nonparametric, ranked, varQGlobal )
     }
   }
   
@@ -158,6 +161,7 @@ hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data,
   output$subject <- subject
   output$factors <- list(c(group), c(factor1, factor2))
   output$data <- X
+  output$var <- varQGlobal
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
   
@@ -182,12 +186,13 @@ hrm.test.2.within <- function(X, alpha, group , factor1, factor2, subject, data,
 hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data, testing = rep(1,7), formula, nonparametric ){
 
   ranked <- NULL
+  varQGlobal <- NULL
   
   # create list for storing results; NULL used, because it is ignored by rbind
   temp <- list(NULL, NULL, NULL, NULL, NULL, NULL, NULL)
   for(i in 1:7){
     if(testing[i]) {
-      temp[[i]] <- hrm.2w.1f(X, alpha, group , subgroup, factor, subject, data, H = i, "", nonparametric, ranked )
+      temp[[i]] <- hrm.2w.1f(X, alpha, group , subgroup, factor, subject, data, H = i, "", nonparametric, ranked, varQGlobal )
     }
   }
   
@@ -198,6 +203,7 @@ hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data
   output$subject <- subject
   output$factors <- list(c(group, subgroup), c(factor))
   output$data <- X
+  output$var <- varQGlobal
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
  
@@ -222,12 +228,13 @@ hrm.test.2.between <- function(X, alpha, group , subgroup, factor, subject, data
 hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, factor2, subject, data, testing = rep(1,15), formula, nonparametric ){
   
   ranked <- NULL
+  varQGlobal <- NULL
   
   # create list for storing results; NULL used, because it is ignored by rbind
   temp <- list(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
   for(i in 1:15){
     if(testing[i]) {
-      temp[[i]] <- hrm.2w.2f(X, alpha, group , subgroup, factor1, factor2, subject, data, H = i, "", nonparametric, ranked )
+      temp[[i]] <- hrm.2w.2f(X, alpha, group , subgroup, factor1, factor2, subject, data, H = i, "", nonparametric, ranked, varQGlobal )
     }
   }
   output <- list()
@@ -237,6 +244,7 @@ hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, facto
   output$subject <- subject
   output$factors <- list(c(group, subgroup), c(factor1, factor2))
   output$data <- X
+  output$var <- varQGlobal
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
   return (output)
@@ -260,22 +268,23 @@ hrm.test.2.between.within <- function(X, alpha, group , subgroup, factor1, facto
 hrm.test.3.between <- function(X, alpha, group , factor1, factor2, factor3, subject, data, testing = rep(1,15), formula, nonparametric ){
   
   ranked <- NULL
+  varQGlobal <- NULL
   
-  temp0 <- if(testing[1]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3, subject, data, "P", "J", "J", "J",  paste(as.character(group) ), nonparametric, ranked )}
-  temp1 <- if(testing[2]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "J", "J", paste(as.character(factor1)), nonparametric, ranked )}
-  temp2 <- if(testing[3]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "P", "J", paste(as.character(factor2)), nonparametric, ranked )}
-  temp3 <- if(testing[4]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "J", "P", paste(as.character(factor3)), nonparametric, ranked )}
-  temp4 <- if(testing[5]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "J", "J", paste(as.character(group),":",as.character(factor1)), nonparametric, ranked )} 
-  temp5 <- if(testing[6]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "P", "J", paste(as.character(group),":",as.character(factor2)), nonparametric, ranked )}
-  temp6 <- if(testing[7]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "J", "P", paste(as.character(group),":",as.character(factor3)), nonparametric, ranked )}
-  temp7 <- if(testing[8]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "P", "J", paste(as.character(factor1),":",as.character(factor2)), nonparametric, ranked )}
-  temp8 <- if(testing[9]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "J", "P", paste(as.character(factor1),":",as.character(factor3)), nonparametric, ranked )}
-  temp9 <- if(testing[10]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "P", "P",paste(as.character(factor2),":",as.character(factor3)), nonparametric, ranked )}
-  temp10 <- if(testing[11]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "P", "J", paste(as.character(group),":",as.character(factor1), ":", as.character(factor2)), nonparametric, ranked )}
-  temp11 <- if(testing[12]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "J", "P", paste(as.character(group),":",as.character(factor1), ":", as.character(factor3)), nonparametric, ranked )}
-  temp12 <- if(testing[13]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "P", "P", paste(as.character(group),":",as.character(factor2), ":", as.character(factor3)), nonparametric, ranked )}
-  temp13 <- if(testing[14]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "P", "P", paste(as.character(factor1),":",as.character(factor2), ":", as.character(factor3)), nonparametric, ranked )}
-  temp14 <- if(testing[15]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "P", "P", paste(as.character(group),":",as.character(factor1), ":", as.character(factor2), ":", as.character(factor3)), nonparametric, ranked )}
+  temp0 <- if(testing[1]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3, subject, data, "P", "J", "J", "J",  paste(as.character(group) ), nonparametric, ranked,varQGlobal )}
+  temp1 <- if(testing[2]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "J", "J", paste(as.character(factor1)), nonparametric, ranked,varQGlobal )}
+  temp2 <- if(testing[3]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "P", "J", paste(as.character(factor2)), nonparametric, ranked,varQGlobal )}
+  temp3 <- if(testing[4]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "J", "P", paste(as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp4 <- if(testing[5]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "J", "J", paste(as.character(group),":",as.character(factor1)), nonparametric, ranked,varQGlobal )} 
+  temp5 <- if(testing[6]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "P", "J", paste(as.character(group),":",as.character(factor2)), nonparametric, ranked,varQGlobal )}
+  temp6 <- if(testing[7]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "J", "P", paste(as.character(group),":",as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp7 <- if(testing[8]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "P", "J", paste(as.character(factor1),":",as.character(factor2)), nonparametric, ranked,varQGlobal )}
+  temp8 <- if(testing[9]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "J", "P", paste(as.character(factor1),":",as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp9 <- if(testing[10]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "J", "P", "P",paste(as.character(factor2),":",as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp10 <- if(testing[11]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "P", "J", paste(as.character(group),":",as.character(factor1), ":", as.character(factor2)), nonparametric, ranked,varQGlobal )}
+  temp11 <- if(testing[12]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "J", "P", paste(as.character(group),":",as.character(factor1), ":", as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp12 <- if(testing[13]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "J", "P", "P", paste(as.character(group),":",as.character(factor2), ":", as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp13 <- if(testing[14]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "J", "P", "P", "P", paste(as.character(factor1),":",as.character(factor2), ":", as.character(factor3)), nonparametric, ranked,varQGlobal )}
+  temp14 <- if(testing[15]) {hrm.1w.3f(X, alpha, group, factor1, factor2, factor3,  subject, data, "P", "P", "P", "P", paste(as.character(group),":",as.character(factor1), ":", as.character(factor2), ":", as.character(factor3)), nonparametric, ranked,varQGlobal )}
   
   output <- list()
   output$result <- rbind(temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14)
@@ -284,6 +293,7 @@ hrm.test.3.between <- function(X, alpha, group , factor1, factor2, factor3, subj
   output$subject <- subject
   output$factors <- list(c(group), c(factor1, factor2, factor3))
   output$data <- X
+  output$var <- varQGlobal
   output$nonparametric <- nonparametric
   class(output) <- "HRM"
   return (output)
