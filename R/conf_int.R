@@ -37,6 +37,7 @@ confint.HRM <- function(object, parm, level = 0.95, ...) {
   quantiles <- qmvnorm(level, corr = R, tail = "both", maxiter = 100)$quantile
   
   if(object$nonparametric) {
+    object$data$prank <- 0
     
     if(object$factors[[1]] != "none") {
       grp <- object$data[, object$factors[[1]][1]]
@@ -47,7 +48,7 @@ confint.HRM <- function(object, parm, level = 0.95, ...) {
       }
   
       object$data$grouping <- as.factor(grp)
-      object$data$prank <- 0
+      
       setDT(object$data)
       object$data[,prank:= 1/(dim(object$data)[1])*(psrank(object$data[[as.character(object$formula[[2]])]], object$data[, grouping]) - 1/2)]
     } else {
