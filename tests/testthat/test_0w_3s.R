@@ -9,7 +9,7 @@ dat$factor3 <- as.factor(rep(kronecker(1:10, rep(1,4)), 160))
 true_result <- c(1.000000, 159.0000, 3.900610, 0.5922840)
 result <- as.numeric(HRM::hrm_test(value ~ factor1*factor2*factor3, subject = "subject", data = dat)$result[1, 2:5])
 result2 <- as.numeric(HRM::hrm_test(value ~ factor3*factor2*factor1, subject = "subject", data = dat)$result[3, 2:5])
-result_CI <- c(1, 1, 1, 3.9380174, 3.8474927,  4.0285421)
+result_CI <- c(1, 1, 1, 3.9380174, 3.8024492,  4.0735856)
 result_hrm <- HRM::hrm_test(value ~ factor1*factor2*factor3, subject = "subject", data = dat)
 
 test_that("function hrm_test", {
@@ -24,7 +24,7 @@ test_that("function hrm_test", {
 true_result <- c(1.000000, 159.0000, 3.90061004, 0.03224197)
 result <- as.numeric(HRM::hrm_test(value ~ factor1*factor2*factor3, subject = "subject", data = dat, nonparametric = TRUE)$result[1, 2:5])
 result2 <- as.numeric(HRM::hrm_test(value2 ~ factor3*factor2*factor1, subject = "subject", data = dat, nonparametric = TRUE)$result[3, 2:5])
-result_CI <- c(1, 1, 1, 0.91993262, 0.91972152, 0.92014371)
+result_CI <- c(1, 1, 1, 0.91993262, 0.91961513, 0.92025011)
 result_hrm <- HRM::hrm_test(value ~ factor1*factor2*factor3, subject = "subject", data = dat, nonparametric = TRUE)
 
 test_that("function hrm_test nonparametric", {
