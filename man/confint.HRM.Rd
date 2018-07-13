@@ -11,7 +11,7 @@
 
 \item{parm}{currently ignored; all possible confidence intervals are calculated}
 
-\item{level}{confidence level used for calculating the inverals}
+\item{level}{confidence level (FWER) used for calculating the inverals}
 
 \item{...}{Further arguments passed to 'hrm_test' will be ignored}
 }
@@ -19,7 +19,7 @@
 Returns a data.frame with mean and 1-alpha confidence interval for each factor combintation
 }
 \description{
-Function to calculate confidence intervals for an object of class 'HRM'.
+Function to calculate simultaneous, asymptotic (1-alpha) confidence intervals for an object of class 'HRM'.
 }
 \examples{
 # hrm.test with a data.frame using a 'formula' object

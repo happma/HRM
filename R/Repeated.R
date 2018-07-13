@@ -331,7 +331,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
       stop("alpha level needs to be a number between 0 and 1")
     }
   }
-  
+
   # convert whole/subplot factor columns to type factor
   tryCatch({ 
     nfactors <- length(attr(terms.formula(formula), "variables"))
@@ -342,7 +342,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
       }
     }
   }, warning = function(w) "", error = function(e) { paste("One of the factor columns could not be converted to a factor variable." ) } )
-  
+
   dat <- model.frame(formula, data)
   dat2 <- data.frame(dat,subj=data[,subject])
 
