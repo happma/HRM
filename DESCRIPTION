@@ -10,7 +10,7 @@ Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
 Maintainer: Martin Happ <martin.happ@aon.at>
 LazyData: true
 Depends: R (>= 3.4.0), MASS, matrixcalc, plyr, ggplot2
-Imports: xtable, reshape2, tcltk, data.table, pseudorank (>= 0.2.0)
+Imports: xtable, reshape2, tcltk, data.table, pseudorank (>= 0.2.0), doBy
 Suggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras,
     testthat
 Description: Methods for testing main and interaction effects in possibly
