@@ -14,9 +14,6 @@ env:
 
 r_packages:
   - covr
-  
-before_install:
-  - sudo apt-get install r-cran-cairodevice r-cran-rgtk2
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
