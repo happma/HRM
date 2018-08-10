@@ -7,7 +7,9 @@
 [![codecov](https://codecov.io/gh/happma/HRM/branch/test/graph/badge.svg)](https://codecov.io/gh/happma/HRM)
 
 
-R package for analysing high-dimensional repeated measures for factorial designs. 
+R package for analysing high-dimensional repeated measures for factorial designs. A description of this package can be found in [1], theoretical derivations of the test statistics are in [2] and [3].
+
+
 
 To install the current development version:
 
@@ -17,7 +19,7 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")
 }
 # install package
-devtools::install_github("happma/HRM")
+devtools::install_github("happma/HRM", ref = "test", dependencies = TRUE)
 library(HRM)
 ```
 
@@ -68,11 +70,13 @@ Additionally, the package can be used with a GUI.
 hrm_GUI()
 ```
 
-For more information, see
+## References
 
-Happ, M., Harrar S. W. and Bathke, A. C. (2018). HRM: An R Package for Analysing High-dimensional Multi-factor Repeated Measures. The R Journal. URL:
-  <a href="https://journal.r-project.org/archive/2018/RJ-2018-032/index.html">https://journal.r-project.org/archive/2018/RJ-2018-032/index.html</a>.
+[1] Happ, M., Harrar, S. W., and Bathke, A. C. (2018). HRM: An R Package for Analysing High-dimensional Multi-factor Repeated Measures. The R Journal 10(1), 534--548. <a href="https://journal.r-project.org/archive/2018/RJ-2018-032/index.html">https://journal.r-project.org/archive/2018/RJ-2018-032/index.html</a>
 
-Happ, M., Harrar S. W. and Bathke, A. C. (2017). High-dimensional Repeated
+
+[2] Happ, M., Harrar S. W. and Bathke, A. C. (2017). High-dimensional Repeated
   Measures. Journal of Statistical Theory and Practice. 11(3), 468-477. URL:
-  <a href="http://www.tandfonline.com/doi/full/10.1080/15598608.2017.1307792">http://www.tandfonline.com/doi/full/10.1080/15598608.2017.1307792</a>.
+  <a href="https://doi.org/10.1080/15598608.2017.1307792">doi:10.1080/15598608.2017.1307792</a>.
+  
+[3] Happ, M., Harrar, S. W., & Bathke, A. C. (2016). Inference for low‐and high‐dimensional multigroup repeated measures designs with unequal covariance matrices. Biometrical Journal, 58(4), 810-830. <a href = "https://doi.org/10.1002/bimj.201500064">doi:10.1002/bimj.201500064</a>
