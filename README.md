@@ -3,7 +3,7 @@
 [![CRANstatus](https://www.r-pkg.org/badges/version/HRM)](https://cran.r-project.org/package=HRM)
 [![](https://cranlogs.r-pkg.org/badges/HRM)](https://cran.r-project.org/package=HRM)
 [![Travis-CI Build Status](https://travis-ci.org/happma/HRM.svg?branch=test)](https://travis-ci.org/happma/HRM)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/happma/HRM?branch=master&svg=true)](https://ci.appveyor.com/project/happma/HRM)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/happma/HRM?branch=test&svg=true)](https://ci.appveyor.com/project/happma/HRM)
 [![codecov](https://codecov.io/gh/happma/HRM/branch/test/graph/badge.svg)](https://codecov.io/gh/happma/HRM)
 
 
