@@ -49,10 +49,10 @@ confint.HRM <- function(object, parm, level = 0.95, ...) {
       object$data$grouping <- as.factor(grp)
       
       setDT(object$data)
-      object$data[,"prank" := 1/(dim(object$data)[1])*(psrank(object$data[[as.character(object$formula[[2]])]], object$data[, grouping]) - 1/2), with = FALSE]
+      object$data[,"prank" := 1/(dim(object$data)[1])*(psrank(object$data[[as.character(object$formula[[2]])]], object$data[, grouping]) - 1/2)]
     } else {
       setDT(object$data)
-      object$data[,"prank" := 1/(dim(object$data)[1])*(rank(object$data[[as.character(object$formula[[2]])]], ties.method="average") - 1/2), with = FALSE]
+      object$data[,"prank" := 1/(dim(object$data)[1])*(rank(object$data[[as.character(object$formula[[2]])]], ties.method="average") - 1/2)]
     }
     new_formula <- as.formula(paste("prank ~", split(as.character(object$formula), "~")[[1]][3]))
     output <- as.data.frame(summaryBy(new_formula, data = object$data, FUN = mean))

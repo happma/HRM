@@ -2,9 +2,9 @@ context("1 Wholeplot, 3 Subplot")
 
 dat <- EEG
 dat$value2 <- exp(dat$value)
-dat$factor1 <- rep(1:2,3200)
-dat$factor2 <- rep(c(1,1,2,2),1600)
-dat$factor3 <- rep(kronecker(1:10, rep(1,4)), 160)
+dat$factor1 <- as.factor(rep(1:2,3200))
+dat$factor2 <- as.factor(rep(c(1,1,2,2),1600))
+dat$factor3 <- as.factor(rep(kronecker(1:10, rep(1,4)), 160))
 
 true_result <- c(2.779981, 95.003041, 2.768161, 1.657329)
 result <- as.numeric(HRM::hrm_test(value ~ group*factor1*factor2*factor3, subject = "subject", data = dat)$result[1, 2:5])
