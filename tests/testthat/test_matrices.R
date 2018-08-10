@@ -1,29 +1,22 @@
 context("hrm_test with matrices")
 
 # number patients per group
-n <- c(10,10)
+n <- c(5,5)
 # number of groups
 a<-2
 # number of variables
-d<-40
+d<-2
 
 # defining the list consisting of the samples from each group
-mu_1 <- rep(0,d)
-mu_2 <- rep(0,d)
-# autoregressive covariance matrix
-sigma_1 <- diag(d)
-for(k in 1:d) for(l in 1:d) sigma_1[k,l] <- 1/(1-0.5^2)*0.5^(abs(k-l))
-sigma_2 <- 1.5*sigma_1
-set.seed(12345)
-X <- list(mvrnorm(n[1],mu_1, sigma_1), mvrnorm(n[2],mu_2, sigma_2))
-X<-lapply(X, as.matrix)
+X <- list(matrix(c(1.63512619, -0.46406855,0.34567845,  1.07325359, 0.05015165, -0.26875828, -0.28943747, -0.61755688, 1.13665826, 0.07511665),ncol=2, byrow=TRUE),
+          matrix(c(-0.7200093, 0.4352615,2.8524930,  1.5989942,0.6883853,  0.2194638,-0.1553311,  1.4295960,-1.1304398, -0.7079807), ncol=2, byrow = TRUE))
 
-true_result <- c(1, 19.8267291, 4.3561230, 0.3923543)
+true_result <- c(1.0000000, 6.2880223, 5.8563918, 0.1037361)
 t_matrices <- hrm_test(data=X, alpha=0.05)
 result <- as.numeric(t_matrices$result[1,2:5])
 
-X[[1]] <- data.frame(value = vec(t(X[[1]])), group = 1, time = rep(1:40,n[1]))
-X[[2]] <- data.frame(value = vec(t(X[[2]])), group = 2, time = rep(1:40,n[2]))
+X[[1]] <- data.frame(value = vec(t(X[[1]])), group = 1, time = rep(1:d,n[1]))
+X[[2]] <- data.frame(value = vec(t(X[[2]])), group = 2, time = rep(1:d,n[2]))
 X <- rbind(X[[1]], X[[2]])
 X$group <- as.factor(X$group)
 X$subject <- gl(sum(n), d)
