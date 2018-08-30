@@ -9,9 +9,8 @@ warnings_are_errors: false
 r_check_args: '--as-cran --use-valgrind'
 
 env:
-  matrix:
-    - _R_CHECK_FORCE_SUGGESTS_=false
-    - VALGRIND_OPTS='--tool=memcheck --leak-check=full --track-origins=yes'
+  - _R_CHECK_FORCE_SUGGESTS_=false
+  - VALGRIND_OPTS='--tool=memcheck --leak-check=full --track-origins=yes'
 
 addons:
   apt:
