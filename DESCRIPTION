@@ -1,6 +1,6 @@
 Package: HRM
-Version: 0.9.6
-Date: 2018-08-10
+Version: 1.0.0
+Date: 2018-08-30
 Title: High-Dimensional Repeated Measures
 Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
                       email = "martin.happ@aon.at",
@@ -10,9 +10,11 @@ Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
 Maintainer: Martin Happ <martin.happ@aon.at>
 LazyData: true
 Depends: R (>= 3.4.0), MASS, matrixcalc, plyr, ggplot2
-Imports: xtable, reshape2, tcltk, data.table, pseudorank (>= 0.2.6), doBy, mvtnorm
+Imports: xtable, reshape2, tcltk, data.table, doBy, mvtnorm, Rcpp (>= 0.12.16), pseudorank
 Suggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras,
     testthat
+LinkingTo: Rcpp, pseudorank
+SystemRequirements: C++11
 Description: Methods for testing main and interaction effects in possibly
     high-dimensional parametric or nonparametric repeated measures in factorial designs.
     The observations of the subjects are assumed to be multivariate normal if using the parametric test.

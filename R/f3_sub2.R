@@ -1,13 +1,13 @@
 ####################################################################################################################################
 ### Filename:    f3_sub2.R
 ### Description: Function for calculating the test statistic for one whole- and two subplot factors
-###              
+###
 ###
 ###
 ####################################################################################################################################
 
 #' Test for interaction of factor A and B
-#' 
+#'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
 #' @param group column name of the data frame X specifying the groups
@@ -20,33 +20,33 @@
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
 hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text = "" , nonparametric, ranked, varQGlobal){
-  
+
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),is.character(factor1),is.character(factor2), alpha<=1, alpha>=0, is.logical(nonparametric))
-  
+
   f <- 0
   f0 <- 0
   crit <- 0
-  test <- 0  
-  
-  
+  test <- 0
+
+
   group <- as.character(group)
   factor1 <- as.character(factor1)
   factor2 <- as.character(factor2)
   subject <- as.character(subject)
-  
-  
+
+
   X <- as.data.table(X)
   setnames(X, c(data, group, factor1, factor2, subject), c("data", "group", "factor1", "factor2", "subject"))
-  
+
   a <- nlevels(X[,group])
   d <- nlevels(X[,factor1])
   c <- nlevels(X[,factor2])
   n <- table(X[,group])/(d*c)
-  
+
   if(nonparametric & is.null(ranked)) {
     X[,data:= 1/(sum(n)*d*c)*(psrank(X[,data], X[, group]) - 1/2)]
   }
-  
+
 
   X <- split(X, X[,group], drop=TRUE)
   for(i in 1:a){
@@ -65,7 +65,7 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
 
   # creating X_bar (list with a entries)
   X_bar <- as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
-  
+
   # defining the hypothesis matrices
   if(H==1){ # A
     K <- 1/(d*c)*J(d*c)
@@ -96,24 +96,23 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
     S <- P(a)
     text <- paste(as.character(group),":",as.character(factor1), ":", as.character(factor2))
   }
-  
+
   # creating dual empirical covariance matrices
   K_Hypothesis <- kronecker(S, K)
   V <- lapply(X, DualEmpirical2, B=K)
-  
+
   Q = data.frame(Q1 = rep(0,a), Q2 = rep(0,a))
   if(nonparametric){
     for(i in 1:a){
       Q[i,] <- calcU(X,n,i,K)
-    }    
+    }
   }
-  
   #################################################################################################
-  
+
   # f
   f_1 <- 0
   f_2 <- 0
-  
+
   for(i in 1:a){
     f_1 <- f_1 + (S[i,i]*1/n[i])^2*.E1(n,i,V[[i]], nonparametric, Q)
     j <- i+1
@@ -122,7 +121,7 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
       j <- j+1
     }
   }
-  
+
   for(i in 1:a){
     f_2 <- f_2 + (S[i,i]*1/n[i])^2*.E2(n,i,V[[i]], nonparametric, Q)
     j <- i+1
@@ -131,33 +130,33 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
       j <- j+1
     }
   }
-  
+
   f <- f_1/f_2
-  
-  
+
+
   ##################################################################################################
-  
-  
-  
+
+
+
   #################################################################################################
   # f0
   f0_1 <- f_1
   f0_2 <- 0
-  
-  
+
+
   for(i in 1:a){
     f0_2 <- f0_2 + (S[i,i]*1/n[i])^2*1/(n[i]-1)*.E2(n,i,V[[i]], nonparametric, Q)
   }
-  
+
   f0 <- f0_1/f0_2
-  
+
   ##################################################################################################
-  
+
   # critical value
   crit <- qf(1-alpha,f,f0)
-  
+
   # Test
-  
+
   direct <- direct.sum(1/n[1]*var(X[[1]]),1/n[2]*var(X[[2]]))
   if(a>2){
     for(i in 3:a) {
@@ -165,12 +164,11 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
     }
   }
   eval.parent(substitute(varQGlobal <- direct))
-  
+
   test <- (t(X_bar)%*%K_Hypothesis%*%X_bar)/(t(rep(1,dim(K_Hypothesis)[1]))%*%(K_Hypothesis*direct)%*%(rep(1,dim(K_Hypothesis)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text, df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-  
-  
+
   return (output)
 }
 

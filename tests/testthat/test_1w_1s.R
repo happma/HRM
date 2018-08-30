@@ -19,3 +19,8 @@ test_that("function hrm_test, nonparametric", {
   expect_equal(result, true_result, tol = 1e-4)
   expect_equal(result2, true_result, tol = 1e-4)
 })
+
+test_that("hrm_test interchange factors", {
+  expect_equal(as.numeric(HRM::hrm_test(value~region*variable*group,data=EEG,subject="subject",nonparametric = T)$result[2,2:5]), as.numeric(HRM::hrm_test(value~variable*region*group,data=EEG,subject="subject",nonparametric = T)$result[3,2:5]), tol=1e-4)
+  expect_equal(as.numeric(HRM::hrm_test(value~region*variable*group,data=EEG,subject="subject",nonparametric = F)$result[2,2:5]), as.numeric(HRM::hrm_test(value~variable*region*group,data=EEG,subject="subject",nonparametric = F)$result[3,2:5]), tol=1e-4)
+})

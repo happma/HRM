@@ -1,7 +1,7 @@
 ####################################################################################################################################
 ### Filename:    f2.R
 ### Description: Function for calculating the test statistic for one whole- and one subplot factor
-###              
+###
 ###
 ###
 ####################################################################################################################################
@@ -10,7 +10,7 @@
 
 
 #' Test for interaction of factor A and B
-#' 
+#'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
 #' @param group column name of the data frame X specifying the groups
@@ -22,18 +22,18 @@
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
 hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonparametric, ranked, varQGlobal ){
-  
+
   stopifnot(is.data.frame(X),is.character(subject), is.character(group),is.character(factor1), alpha<=1, alpha>=0, is.logical(nonparametric))
   f <- 0
   f0 <- 0
   crit <- 0
-  test <- 0  
-  
-  
+  test <- 0
+
+
   group <- as.character(group)
   factor1 <- as.character(factor1)
   subject <- as.character(subject)
-  
+
   X <- as.data.table(X)
   setnames(X, c(data, group, factor1, subject), c("data", "group", "factor1", "subject"))
 
@@ -87,7 +87,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   # creating dual empirical covariance matrices
   K_AB <- kronecker(S, K)
   V <- lapply(X, DualEmpirical2, B=K)
-  
+
   ##########################
   ### U statistics
   #########################
@@ -96,17 +96,18 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   if(nonparametric){
     for(i in 1:a){
       Q[i,] <- calcU(X,n,i,K)
-    }    
+    }
   }
-  
-   
+
+
+
   #################################################################################################
 
-  
+
   # f
   f_1 <- 0
   f_2 <- 0
-  
+
   for(i in 1:a){
     f_1 <- f_1 + (S[i,i]*1/n[i])^2*.E1(n,i,V[[i]],nonparametric,Q)
     j <- i+1
@@ -115,7 +116,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
       j <- j+1
     }
   }
-  
+
   for(i in 1:a){
     f_2 <- f_2 + (S[i,i]*1/n[i])^2*.E2(n,i,V[[i]],nonparametric,Q)
     j <- i+1
@@ -124,33 +125,33 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
       j <- j+1
     }
   }
-  
+
   f <- f_1/f_2
-  
+
 
   ##################################################################################################
-  
-  
-  
+
+
+
   #################################################################################################
   # f0
   f0_1 <- f_1
   f0_2 <- 0
-  
-  
+
+
   for(i in 1:a){
     f0_2 <- f0_2 + (S[i,i]*1/n[i])^2*1/(n[i]-1)*.E2(n,i,V[[i]],nonparametric,Q)
   }
 
   f0 <- f0_1/f0_2
-  
+
   ##################################################################################################
 
   f <- abs(f)
 
   # critical value
   crit <- qf(1-alpha,f,f0)
-  
+
   # variance estimator
   direct <- direct.sum(1/n[1]*var(X[[1]]),1/n[2]*var(X[[2]]))
   if(a>2){
@@ -158,15 +159,13 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
       direct <- direct.sum(direct, 1/n[i]*var(X[[i]]))
     }
   }
-  
-  eval.parent(substitute(varQGlobal <- direct))
 
+  eval.parent(substitute(varQGlobal <- direct))
 
   test <- (t(X_bar)%*%K_AB%*%X_bar)/(t(rep(1,dim(K_AB)[1]))%*%(K_AB*direct)%*%(rep(1,dim(K_AB)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-  
-  
+
   return (output)
 }
 
