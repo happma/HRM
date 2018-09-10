@@ -66,7 +66,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
 
   if(H=="A"){
     K <- 1/d*J(d)
-    S <- diag(n)-1/sum(n)*n%*%t(n)
+    S <- diag(n)-1/sum(n)*tcrossprod(n,n)
   } else if(H=="Au"){
     K <- 1/d*J(d)
     S <- P(a)
@@ -79,9 +79,6 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   } else if(H=="A|B"){
     K <- I(d)
     S <- P(a)
-  } else if(H=="B|A"){
-    K <- P(d)
-    S <- I(a)
   }
 
   # creating dual empirical covariance matrices
@@ -121,7 +118,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
     f_2 <- f_2 + (S[i,i]*1/n[i])^2*.E2(n,i,V[[i]],nonparametric,Q)
     j <- i+1
     while(j<=a){
-      f_2 <- f_2 + 2*S[i,j]*S[j,i]*1/(n[i]*n[j])*.E4(1/(n[i]-1)*P(n[i])%*%X[[i]],1/(n[j]-1)*K%*%t(X[[j]])%*%P(n[j])%*%X[[j]]%*%K%*%t(X[[i]])%*%P(n[i]))
+      f_2 <- f_2 + 2*S[i,j]*S[j,i]*1/(n[i]*n[j])*.E4(1/(n[i]-1)*P(n[i])%*%X[[i]], 1/(n[j]-1)*K%*%t(X[[j]])%*%P(n[j])%*%X[[j]]%*%K%*%t(X[[i]])%*%P(n[i]))
       j <- j+1
     }
   }
@@ -162,7 +159,8 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
 
   eval.parent(substitute(varQGlobal <- direct))
 
-  test <- (t(X_bar)%*%K_AB%*%X_bar)/(t(rep(1,dim(K_AB)[1]))%*%(K_AB*direct)%*%(rep(1,dim(K_AB)[1])))
+  den_one <- rep(1, dim(K_AB)[1])
+  test <- crossprod(X_bar, crossprod(K_AB, X_bar))/crossprod(den_one, crossprod(K_AB*direct, den_one))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
 

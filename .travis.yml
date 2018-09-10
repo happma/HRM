@@ -17,9 +17,14 @@ addons:
   apt:
     packages:
       - valgrind
-      
+
 r_packages:
   - covr
+
+script:
+  - |
+    R CMD build .
+    travis_wait 20 R CMD check HRM*tar.gz
 
 after_success:
   - Rscript -e 'library(covr); codecov()'

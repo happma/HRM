@@ -1,6 +1,6 @@
 Package: HRM
-Version: 1.0.0
-Date: 2018-08-30
+Version: 1.0.1
+Date: 2018-09-04
 Title: High-Dimensional Repeated Measures
 Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
                       email = "martin.happ@aon.at",
