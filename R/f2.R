@@ -43,7 +43,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   n <- table(X[,group])/d
 
   if(nonparametric & is.null(ranked)) {
-    X[,data:= 1/(sum(n)*d)*(psrank(X[,data], X[, group]) - 1/2)]
+    X[,data:= 1/(sum(n)*d)*(pseudorank(X[,data], X[, group]) - 1/2)]
   }
 
   X <- split(X, X[,group], drop=TRUE)
