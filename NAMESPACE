@@ -15,6 +15,7 @@ importFrom("data.table", "setDT", "rbindlist", "setnames", "as.data.table", ":="
 importFrom("pseudorank", "pseudorank")
 importFrom("doBy", "summaryBy")
 importFrom("mvtnorm", "qmvnorm")
+importFrom("Rcpp", "evalCpp")
 S3method(print, HRM)
 S3method(summary, HRM)
 S3method(confint, HRM)
