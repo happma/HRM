@@ -27,7 +27,9 @@ Function to calculate simultaneous, asymptotic (1-alpha) confidence intervals fo
 # using the EEG dataset
 ?EEG
 
-z <- hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
-confint(z)
+## Not run:
+# z <- hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
+# confint(z)
+## End(Not run)
 }
 \keyword{export}
