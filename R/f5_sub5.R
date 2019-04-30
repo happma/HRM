@@ -30,7 +30,7 @@ hrm.test.5.five<- function(X, alpha , factor1, factor2, factor3, factor4, factor
   hypo <- expand.grid(c(1,0),c(1,0),c(1,0),c(1,0),c(1,0))[1:(2^5-1),]
   hypo$sum <- rowSums(hypo)
   hypo <- hypo[order(hypo$sum, -hypo$Var1, -hypo$Var2, -hypo$Var3, -hypo$Var4, -hypo$Var5),]
-  x<-attributes(terms.formula(formula))$term.labels
+  x <- attributes(terms.formula(formula))$term.labels
 
   testing <- rep(FALSE, 2^5-1)
   for(i in 1:length(x)){
