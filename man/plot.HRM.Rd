@@ -8,7 +8,7 @@
   legend.title = "", ...)
 }
 \arguments{
-\item{x}{An object of class 'HRM' from the function 'hrm.test'}
+\item{x}{An object of class 'HRM' from the function 'hrm_test'}
 
 \item{xlab}{label of the x-axis of the plot}
 

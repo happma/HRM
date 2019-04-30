@@ -5,7 +5,7 @@
 \title{Test for two subplot factors}
 \usage{
 hrm.test.3.three(X, alpha, factor1, factor2, factor3, subject, data,
-  formula, testing = rep(1, 7), nonparametric)
+  formula, testing = rep(1, 7), nonparametric, np.correction)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}

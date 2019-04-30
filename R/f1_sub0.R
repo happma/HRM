@@ -33,9 +33,11 @@ hrm.test.1.none <- function(X, alpha , group, subject, data, formula, nonparamet
   output$data <- X
   output$var <- varQGlobal
   output$nonparametric <- nonparametric
+  output$np.correction <- FALSE
+  rownames(output$result) <- 1:dim(output$result)[1]
   class(output) <- "HRM"
 
-  return (output)
+  return(output)
 }
 
 
@@ -111,7 +113,7 @@ hrm.1w.0f <- function(X, alpha, group, subject, data, H, text, nonparametric, ra
   ### U statistics
   #########################
 
-  Q = data.frame(Q1 = rep(0,a), Q2 = rep(0,a))
+  Q <- data.frame(Q1 = rep(0,a), Q2 = rep(0,a))
   if(nonparametric){
     for(i in 1:a){
       Q[i,] <- calcU(X,n,i,K)

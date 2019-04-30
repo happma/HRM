@@ -1,6 +1,6 @@
 Package: HRM
-Version: 1.0.2
-Date: 2018-10-16
+Version: 1.1.1
+Date: 2019-04-30
 Title: High-Dimensional Repeated Measures
 Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
                       email = "martin.happ@aon.at",
@@ -21,7 +21,7 @@ Description: Methods for testing main and interaction effects in possibly
     The nonparametric version tests with regard to nonparametric relative effects (based on pseudo-ranks).
     It is possible to use up to 2 whole- and 3 subplot factors.
 License: GPL-2 | GPL-3
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 URL: http://github.com/happma/HRM
 BugReports: http://github.com/happma/HRM/issues
 NeedsCompilation: yes

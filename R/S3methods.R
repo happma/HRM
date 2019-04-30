@@ -16,6 +16,7 @@
 #' @param subject column name within the data frame X identifying the subjects
 #' @param alpha alpha level used for calculating the critical value for the test
 #' @param nonparametric Logical variable indicating wether the noparametric version of the test statistic should be used
+#' @param np.correction Logical variable indicating wether a small sample size correction for the nonparametric test should be used (TRUE) or not (FALSE). By using NA, np.correction is used automatically in an high-dimensional setting.
 #' @param character.only a logical indicating whether subject can be assumed to be a character string
 #' @param ... Further arguments passed to 'hrm_test' will be ignored
 #' @return Returns an object from class HRM containing
@@ -48,12 +49,13 @@ hrm_test.list <- function(data, alpha = 0.05, ...) {
 #' @method hrm_test data.frame
 #' @keywords export
 hrm_test.data.frame <- function(data, formula, alpha = 0.05,  subject, nonparametric = FALSE,
-                                character.only = FALSE, ... ) {
+                                np.correction = NA, character.only = FALSE, ... ) {
   if(!character.only) {
     subject <- as.character(substitute(subject))
   }
 
-  return(hrm_test_internal(formula=formula, data=data, alpha=alpha,subject=subject, nonparametric ))
+  return(hrm_test_internal(formula=formula, data=data, alpha=alpha,subject=subject,
+                           nonparametric, np.correction ))
 }
 
 
@@ -61,6 +63,11 @@ hrm_test.data.frame <- function(data, formula, alpha = 0.05,  subject, nonparame
 print.HRM <- function(x, ...) {
   if(x$nonparametric){
     cat("Nonparametric Repeated Measures Analysis\n")
+    if(x$np.correction) {
+      cat("With Bias Correction for Degrees of Freedom\n")
+    } else if(!x$np.correction) {
+      cat("Without Bias Correction for Degrees of Freedom\n")
+    }
     cat("\n")
   }
   if(!is.null(x$formula)) {
@@ -77,9 +84,15 @@ print.HRM <- function(x, ...) {
 
 #' @keywords export
 summary.HRM <- function(object, ...) {
-  if(object$nonparametric){
+  if(object$nonparametric) {
     cat("Nonparametric Repeated Measures Analysis\n")
+    if(object$np.correction) {
+      cat("With Bias Correction for Degrees of Freedom\n")
+    } else if(!object$np.correction) {
+      cat("Without Bias Correction for Degrees of Freedom\n")
+    }
   }
+  cat("\n")
   cat("Summary:\n")
   cat("\n")
   if(!is.null(object$formula)) {
@@ -87,10 +100,10 @@ summary.HRM <- function(object, ...) {
     print(object$formula)
     cat("\n")
     cat("between-subject factors: ")
-    cat(object$factors[[1]], sep=", ")
+    cat(object$factors[[1]], sep = ", ")
     cat("\n")
     cat("within-subject factors: ")
-    cat(object$factors[[2]], sep=", ")
+    cat(object$factors[[2]], sep = ", ")
     cat("\n")
     cat("\n")
   }
