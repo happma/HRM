@@ -219,12 +219,6 @@ hrm.0w.5s <- function(X, alpha , factor1, factor2, factor3, factor4, factor5, su
           tmpQ2 <- Q[gg,2] - corr2*(n[gg]^2*1/(n[gg]^2 - n[gg]))^2
 
 
-        # already calculated
-        if(!is.null(tmpQ1g) & !is.null(tmpQ2g)) {
-          tmpQ1 <- tmpQ1g
-          tmpQ2 <- tmpQ2g
-        }
-
         if(tmpQ1 > 0) {
           Q[gg,1] <- tmpQ1
         }
