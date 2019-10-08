@@ -1,6 +1,6 @@
 Package: HRM
-Version: 1.1.1
-Date: 2019-04-30
+Version: 1.2.0
+Date: 2019-10-08
 Title: High-Dimensional Repeated Measures
 Authors@R: c(person("Martin Happ", role = c("aut", "cre"),
                       email = "martin.happ@aon.at",
@@ -16,7 +16,7 @@ Suggests: RGtk2 (>= 2.8.0), cairoDevice, RGtk2Extras,
 LinkingTo: Rcpp
 SystemRequirements: C++11
 Description: Methods for testing main and interaction effects in possibly
-    high-dimensional parametric or nonparametric repeated measures in factorial designs.
+    high-dimensional parametric or nonparametric repeated measures in factorial designs for univariate or multivariate data.
     The observations of the subjects are assumed to be multivariate normal if using the parametric test.
     The nonparametric version tests with regard to nonparametric relative effects (based on pseudo-ranks).
     It is possible to use up to 2 whole- and 3 subplot factors.

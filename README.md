@@ -1,4 +1,4 @@
-# HRM 1.0.2
+# HRM 1.2.0
 
 [![CRANstatus](https://www.r-pkg.org/badges/version/HRM)](https://cran.r-project.org/package=HRM)
 [![](https://cranlogs.r-pkg.org/badges/HRM)](https://cran.r-project.org/package=HRM)
