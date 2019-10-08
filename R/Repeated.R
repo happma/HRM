@@ -419,7 +419,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
   if(length(subplot)>5 & length(wholeplot)<1){
     stop("The model supports up to five subplot-factor when using no wholeplot-factors.")
   }
-  if((length(wholeplot) != 1  | length(subplot) != 1 ) & !is.null(variable)) {
+  if((length(wholeplot) > 1  | length(subplot) > 1 ) & !is.null(variable)) {
     stop("The package currently supports Multivariate Repeated Measures only for models with 1 whole-plot and 1 sub-plot factor.")
   }
 
@@ -431,8 +431,11 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
     subplot<-colnames(dat2[,subplot])
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.1.one(X, alpha , factor1, subject, data, formula, nonparametric, np.correction ))
-
+    if(is.null(variable)) {
+      return(hrm.test.1.one(X, alpha , factor1, subject, data, formula, nonparametric, np.correction ))
+    } else {
+      return(hrm.mv.1w.1f(X, alpha, NULL , factor1, subject, data, variable, formula ))
+    }
   }
 
   # Case: no wholeplot, two subpot factor
@@ -542,8 +545,11 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
     wholeplot<-colnames(dat2[,group])
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.1.none(X, alpha , group, subject, data, formula, nonparametric ))
-
+    if(is.null(variable)){
+      return(hrm.test.1.none(X, alpha , group, subject, data, formula, nonparametric ))
+    } else {
+      return(hrm.mv.1w.1f(X, alpha, group , NULL, subject, data, variable, formula ))
+    }
   }
 
   # Case: 1 whole and 1 subplot factor

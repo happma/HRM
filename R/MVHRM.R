@@ -1,5 +1,5 @@
 ####################################################################################################################################
-### Filename:    MVHRM.R
+### Filename:    MVHRM_1w_1s.R
 ### Description: Function for calculating the MVHRM test statistic
 ###
 ###
@@ -22,7 +22,7 @@
 #' @keywords internal
 hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, formula ){
 
-  if(!is.null(group)) {
+  if(!is.null(group) & !is.null(factor1)) {
     group <- as.character(group)
     factor1 <- as.character(factor1)
     subject <- as.character(subject)
@@ -72,8 +72,113 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     class(output) <- "HRM"
 
     return(output)
-
   } # end group != NULL
+
+  # Fall 0w.1s.
+  if(is.null(group) & !is.null(factor1)) {
+    group <- "group"
+    factor1 <- as.character(factor1)
+    subject <- as.character(subject)
+    variable <- as.character(variable)
+
+    X$group <- as.factor(1)
+
+    X <- as.data.table(X)
+    setnames(X, c(data, group, factor1, subject, variable), c("data", "group", "factor1", "subject", "variable"))
+
+    a <- nlevels(X[,group])
+    t <- nlevels(X[,factor1])
+    p <- nlevels(X[,variable])
+    d <- p*t
+    n <- table(X[,group])/d
+
+    if(t <= 1) {
+      stop("At least t = 2 repeated measurements needed.")
+    }
+    if (p <= 1) {
+      stop("At least p = 2 variables needed.")
+    }
+
+    C1 <- J(a)/a
+    #C2 <- P(a)/(a-1)
+    D1 <- t(as.matrix(rep(1,t)))*1/t
+    D2 <- cbind(I(t-1), rep(-1,t-1))
+
+
+
+    result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
+    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C1, D2 )
+
+    output2 <- data.frame(hypothesis = rep(as.character(factor1), 3), result = result)
+    colnames(output2) <- c("hypothesis", "method", "fH", "fG", "test", "pvalue", "sign.code")
+
+    output <- list()
+    output$result <- output2
+    output$formula <- formula
+    output$alpha <- alpha
+    output$subject <- subject
+    output$variable <- variable
+    output$factors <- list(NULL, factor1)
+    output$data <- X
+    output$nonparametric <- FALSE
+    output$np.correction <- FALSE
+    class(output) <- "HRM"
+
+    return(output)
+  } # end group == NULL
+
+  # Fall 1w.0s.
+  if(!is.null(group) & is.null(factor1)) {
+    group <- as.character(group)
+    factor1 <- "factor1"
+    subject <- as.character(subject)
+    variable <- as.character(variable)
+
+    X$factor1 <- as.factor(1)
+
+    X <- as.data.table(X)
+    setnames(X, c(data, group, factor1, subject, variable), c("data", "group", "factor1", "subject", "variable"))
+
+    a <- nlevels(X[,group])
+    t <- nlevels(X[,factor1])
+    p <- nlevels(X[,variable])
+    d <- p*t
+    n <- table(X[,group])/d
+
+    if(a <= 1) {
+      stop("At least a = 2 groups are needed.")
+    }
+    if (p <= 1) {
+      stop("At least p = 2 variables needed.")
+    }
+
+    C1 <- J(a)/a
+    C2 <- P(a)/(a-1)
+    D1 <- t(as.matrix(rep(1,t)))*1/t
+    #D2 <- cbind(I(t-1), rep(-1,t-1))
+
+
+
+    result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
+    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D1 )
+
+    output2 <- data.frame(hypothesis = rep(as.character(group), 3), result = result)
+    colnames(output2) <- c("hypothesis", "method", "fH", "fG", "test", "pvalue", "sign.code")
+
+    output <- list()
+    output$result <- output2
+    output$formula <- formula
+    output$alpha <- alpha
+    output$subject <- subject
+    output$variable <- variable
+    output$factors <- list(group, NULL)
+    output$data <- X
+    output$nonparametric <- FALSE
+    output$np.correction <- FALSE
+    class(output) <- "HRM"
+
+    return(output)
+  } # end factor1 == NULL
 }
 
 
