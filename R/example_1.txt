@@ -25,3 +25,6 @@ hrm_test(data=X, alpha=0.05)
 ?EEG
 
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
+
+# Multivariate Approach: testing effects for each variable
+hrm_test(value~group*region, subject=subject, variable=variable, data = EEG)

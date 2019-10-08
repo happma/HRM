@@ -128,11 +128,13 @@ hrm.0w.4s <- function(X, alpha , factor1, factor2, factor3, factor4, subject, da
   text <- ""
   dimension <- c(d,c,c2,c3)
 
+  kdim <- 1
   factors <- c(factor1,factor2,factor3,factor4)
   for(i in 1:length(hypo)){
 
     if(hypo[i] == 1){
       Kcomponents[[i]] <- P(dimension[i])
+      kdim <- kdim*dimension[i]
     } else {
       Kcomponents[[i]] <- 1/dimension[i]*J(dimension[i])
     }
@@ -161,10 +163,12 @@ hrm.0w.4s <- function(X, alpha , factor1, factor2, factor3, factor4, subject, da
     }
   }
 
-  if(is.na(np.correction)) {
-    np.correction <- (d*c*c2*c3 >= max(n))
-  }
   eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d*c*c2*c3 >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
 
   if(nonparametric & np.correction) {
       for(gg in 1:a) {
@@ -289,6 +293,9 @@ hrm.0w.4s <- function(X, alpha , factor1, factor2, factor3, factor4, subject, da
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
   colnames(output)[1] <- "hypothesis"
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

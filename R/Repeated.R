@@ -335,7 +335,7 @@ hrm.test.3.between <- function(X, alpha, group , factor1, factor2, factor3, subj
 #' @return \item{factors}{A list containing the whole- and subplot factors.}
 #' @return \item{data}{The data.frame or list containing the data.}
 #' @keywords internal
-hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametric, np.correction ){
+hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, nonparametric, np.correction){
 
   if(missing(data) || !is.data.frame(data)){
     stop("dataframe needed")
@@ -364,7 +364,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
   }, warning = function(w) "", error = function(e) { paste("One of the factor columns could not be converted to a factor variable." ) } )
 
   dat <- model.frame(formula, data)
-  dat2 <- data.frame(dat,subj=data[,subject])
+  dat2 <- data.frame(dat,subj=data[,subject], variable = data[, variable])
 
   m <- ncol(dat)
 
@@ -393,9 +393,16 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
   wholeplot <- which(wholeplot==1)
   subplot <- which( subplot==1)
 
-
-  if(!(measurements == countSubplotFactor)){
-    stop(paste("The number of repeated measurements per subject (", measurements, ") is uneqal to the number of levels of the subplot factors (", countSubplotFactor, ")."))
+  if(is.null(variable)) {
+    if(!(measurements == countSubplotFactor)){
+      stop(paste("The number of repeated measurements per subject (", measurements, ") is uneqal to the number of levels of the subplot factors (", countSubplotFactor, ")."))
+    }
+  }
+  if(!is.null(variable)) {
+    p <- nlevels(dat2$variable)
+    if(!(measurements/p == countSubplotFactor)){
+      stop(paste("The number of repeated measurements per subject (", measurements/p, ") is uneqal to the number of levels of the subplot factors (", countSubplotFactor, ")."))
+    }
   }
   if(length(wholeplot)>2){
     stop("Too many factors are used! Only two wholelot-factors are supported.")
@@ -411,6 +418,9 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
   }
   if(length(subplot)>5 & length(wholeplot)<1){
     stop("The model supports up to five subplot-factor when using no wholeplot-factors.")
+  }
+  if((length(wholeplot) != 1  | length(subplot) != 1 ) & !is.null(variable)) {
+    stop("The package currently supports Multivariate Repeated Measures only for models with 1 whole-plot and 1 sub-plot factor.")
   }
 
   # Case: no wholeplot, one subpot factor
@@ -450,7 +460,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
     subplot<-colnames(dat2[,subplot])
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.2.two(X, alpha , factor1, factor2, subject, data, formula, testing, nonparametric ))
+    return(hrm.test.2.two(X, alpha , factor1, factor2, subject, data, formula, testing, nonparametric, np.correction ))
 
   }
 
@@ -564,7 +574,11 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, nonparametr
     }
     X<-data
     data <- colnames(dat)[1]
-    return(hrm.test.2.one(X, alpha, group , factor1, subject, data, testing, formula, nonparametric, np.correction ))
+    if(is.null(variable)) {
+      return(hrm.test.2.one(X, alpha, group , factor1, subject, data, testing, formula, nonparametric, np.correction ))
+    } else {
+      return(hrm.mv.1w.1f(X, alpha, group, factor1, subject, data, variable, formula))
+    }
   }
 
   # Case: 2 wholeplot, 1 subplot factor

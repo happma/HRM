@@ -74,6 +74,7 @@ hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data
   # creating dual empirical covariance matrices
   npcriteria <- (K1 != "P" & K2 != "P" & K3 != "P")
 
+  kdim <- 1
   if(S == "P"){
     S <- P(a)
   } else {
@@ -81,16 +82,19 @@ hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data
   }
   if(K1 == "P"){
     K1 <- P(d)
+    kdim <- kdim*d
   } else {
     K1 <- 1/d*J(d)
   }
   if(K2 == "P"){
     K2 <- P(c)
+    kdim <- kdim*c
   } else {
     K2 <- 1/c*J(c)
   }
   if(K3 == "P"){
     K3 <- P(c2)
+    kdim <- kdim*c2
   } else {
     K3 <- 1/c2*J(c2)
   }
@@ -106,10 +110,12 @@ hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data
     }
   }
 
-  if(is.na(np.correction)) {
-    np.correction <- (d*c*c2 >= max(n))
-  }
   eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d*c*c2 >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
 
   if(np.correction & nonparametric) {
     if(!npcriteria) {
@@ -239,7 +245,9 @@ hrm.1w.3f <- function(X, alpha, group , factor1, factor2, factor3, subject, data
   test <- (t(X_bar)%*%K_phi%*%X_bar)/(t(rep(1,dim(K_phi)[1]))%*%(K_phi*direct)%*%(rep(1,dim(K_phi)[1])))
   p.value<-1-pf(test,f,f0)
   output <- data.frame(hypothesis=hypothesis,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

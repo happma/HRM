@@ -66,6 +66,7 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
   # creating X_bar (list with a entries)
   X_bar <- as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
 
+  kdim <- 1
   # defining the hypothesis matrices
   if(H==1){ # A
     K <- 1/(d*c)*J(d*c)
@@ -75,26 +76,32 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
     K <- kronecker(P(d), 1/c*J(c))
     S <- 1/a*J(a)
     text <- paste(as.character(factor1))
+    kdim <- d
   } else if(H==3){ # C
     K <- kronecker(1/d*J(d), P(c))
     S <- 1/a*J(a)
     text <- paste(as.character(factor2))
+    kdim <- c
   } else if(H==4){ # AB
     K <- kronecker(P(d), 1/c*J(c))
     S <- P(a)
     text <- paste(as.character(group),":",as.character(factor1))
+    kdim <- d
   } else if(H==5){ # AC
     K <- kronecker(1/d*J(d), P(c))
     S <- P(a)
     text <- paste(as.character(group),":",as.character(factor2))
+    kdim <- c
   } else if(H==6){ # BC
     K <- kronecker(P(d), P(c))
     S <- 1/a*J(a)
     text <- paste(as.character(factor1),":",as.character(factor2))
+    kdim <- d*c
   } else if(H==7){ # ABC
     K <- kronecker(P(d), P(c))
     S <- P(a)
     text <- paste(as.character(group),":",as.character(factor1), ":", as.character(factor2))
+    kdim <- d*c
   }
 
   # creating dual empirical covariance matrices
@@ -108,10 +115,12 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
     }
   }
 
-  if(is.na(np.correction)) {
-    np.correction <- (d*c >= max(n))
-  }
   eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d*c >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
 
   if(np.correction & nonparametric) {
     if(H %in% 2:7) {
@@ -234,6 +243,9 @@ hrm.1w.2f <- function(X, alpha, group , factor1, factor2, subject, data, H, text
   test <- (t(X_bar)%*%K_Hypothesis%*%X_bar)/(t(rep(1,dim(K_Hypothesis)[1]))%*%(K_Hypothesis*direct)%*%(rep(1,dim(K_Hypothesis)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text, df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

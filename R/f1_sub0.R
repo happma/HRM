@@ -180,7 +180,9 @@ hrm.1w.0f <- function(X, alpha, group, subject, data, H, text, nonparametric, ra
   test <- (t(X_bar)%*%K_A%*%X_bar)/(t(rep(1,dim(K_A)[1]))%*%(K_A*direct)%*%(rep(1,dim(K_A)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-
+  if(nonparametric) {
+    output$np.correction <- FALSE
+  }
 
   return (output)
 }

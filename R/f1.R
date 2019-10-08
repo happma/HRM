@@ -16,14 +16,18 @@
 #' @param subject column name of the data frame X identifying the subjects
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.test.2.two <- function(X, alpha , factor1, factor2, subject, data, formula, testing = rep(1,3), nonparametric ){
+hrm.test.2.two <- function(X, alpha , factor1, factor2, subject, data, formula, testing = rep(1,3), nonparametric, np.correction ){
 
   ranked <- NULL
   varQGlobal <- NULL
+  means <- NULL
+  correction <- NULL
+  tmpQ1g <- NULL
+  tmpQ2g <- NULL
 
-  temp0 <- if(testing[1]) { hrm.0w.2s(X, alpha , factor1,  factor2, subject, data, "B", paste(as.character(factor1)),nonparametric, ranked, varQGlobal) }
-  temp1 <- if(testing[2]) { hrm.0w.2s(X, alpha , factor1,  factor2, subject, data, "C", paste(as.character(factor2)),nonparametric, ranked, varQGlobal) }
-  temp2 <- if(testing[3]) { hrm.0w.2s(X, alpha , factor1,  factor2, subject, data, "BC", paste(as.character(factor1), ":", as.character(factor2) ),nonparametric, ranked, varQGlobal) }
+  temp0 <- if(testing[1]) { hrm.0w.2s(X, alpha , factor1,  factor2, subject, data, "B", paste(as.character(factor1)),nonparametric, ranked, varQGlobal, np.correction, tmpQ1g, tmpQ2g) }
+  temp1 <- if(testing[2]) { hrm.0w.2s(X, alpha , factor1,  factor2, subject, data, "C", paste(as.character(factor2)),nonparametric, ranked, varQGlobal, np.correction, tmpQ1g, tmpQ2g) }
+  temp2 <- if(testing[3]) { hrm.0w.2s(X, alpha , factor1,  factor2, subject, data, "BC", paste(as.character(factor1), ":", as.character(factor2) ),nonparametric, ranked, varQGlobal, np.correction, tmpQ1g, tmpQ2g) }
 
   output <- list()
   output$result <- rbind(temp0,temp1,temp2)
@@ -32,9 +36,12 @@ hrm.test.2.two <- function(X, alpha , factor1, factor2, subject, data, formula, 
   output$subject <- subject
   output$factors <- list(c("none"), c(factor1, factor2))
   output$data <- X
+  output$mean <- means
   output$var <- varQGlobal
   output$nonparametric <- nonparametric
+  output$np.correction <- correction
   class(output) <- "HRM"
+  rownames(output$result) <- 1:dim(output$result)[1]
 
   return (output)
 }
@@ -266,7 +273,9 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonpar
   test <- (t(X_bar)%*%K_B%*%X_bar)/(t(rep(1,dim(K_B)[1]))%*%(K_B*direct)%*%(rep(1,dim(K_B)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }
@@ -286,7 +295,7 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonpar
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.0w.2s <- function(X, alpha , factor1, factor2, subject, data, H = "B", text ="", nonparametric, ranked, varQGlobal ){
+hrm.0w.2s <- function(X, alpha , factor1, factor2, subject, data, H = "B", text ="", nonparametric, ranked, varQGlobal, np.correction, tmpQ1g, tmpQ2g ){
 
   stopifnot(is.data.frame(X),is.character(subject), is.character(factor1), is.character(factor2), alpha<=1, alpha>=0)
   f <- 0
@@ -326,19 +335,22 @@ hrm.0w.2s <- function(X, alpha , factor1, factor2, subject, data, H = "B", text 
 
   # creating X_bar (list with a entries)
   X_bar <- colMeans(X)  # as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
-
+  eval.parent(substitute(means <- X_bar))
 
 
 
 
   if(H=="B"){
     K <- kronecker(P(d), 1/c*J(c))
+    kdim <- d
   }
   if(H=="C"){
     K <- kronecker(1/d*J(d), P(c))
+    kdim <- c
   }
   if(H=="BC"){
     K <- kronecker(P(d), P(c))
+    kdim <- d*c
   }
   S <- 1
   # creating dual empirical covariance matrices
@@ -353,6 +365,70 @@ hrm.0w.2s <- function(X, alpha , factor1, factor2, subject, data, H = "B", text 
     for(i in 1:a){
       Q[i,] <- calcU_onegroup(X,n,K)
     }
+  }
+
+  eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d*c >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
+
+  if(np.correction & nonparametric) {
+      for(gg in 1:a) {
+        tmp <- X%*%K
+        nr <- dim(tmp)[1]
+        p <- dim(tmp)[2]
+        if(nr%%2 == 1){
+          nr <- nr - 1
+        }
+        mm <- colMeans(tmp)
+        g <- rep(0,nr)
+        g2 <- vector("list", length = nr)
+        t2 <- matrix(rep(0,p^2), ncol = p)
+        for(i in 1:nr) {
+          g[i] <- t(tmp[i,] - mm) %*% (tmp[i,] - mm)
+          g2[[i]] <- (tmp[i,] - mm) %*% t(tmp[i,] - mm)
+          t2 <- t2 + g2[[i]]
+        }
+
+        reps <- min(150, choose(nr,nr/2))
+        covs <- rep(0,reps)
+        g1 <- rep(0, nr/2)
+        g12 <- rep(0, nr/2)
+
+        for(i in 1:reps) {
+          grp <- sample(c(rep(1,nr/2), rep(2,nr/2)))
+          g1 <- g[grp == 1]
+          g12 <- g[grp == 2]
+          covs[i] <- cov(g1,g12)
+        }
+
+        t4 <- rep(0, nr*(nr - 1)/2)
+        k <- 1
+        for(i in 1:nr) {
+          j <- i + 1
+          while(j <= nr) {
+            t4[k] <- matrix.trace(g2[[i]]%*%g2[[j]])
+            k <- k + 1
+            j <- j + 1
+          }
+        }
+
+        corr <- mean(covs)
+        corr2 <- mean(t4) - matrix.trace((1/nr*t2)*(1/nr*t2))
+
+        tmpQ1 <-  Q[gg,1] - corr*(n[gg]^2*1/(n[gg]^2 - n[gg]))^2
+        tmpQ2 <- Q[gg,2] - corr2*(n[gg]^2*1/(n[gg]^2 - n[gg]))^2
+
+        if(tmpQ1 > 0) {
+          Q[gg,1] <- tmpQ1
+        }
+        if(tmpQ2 > 0) {
+          Q[gg,2] <- tmpQ2
+        }
+
+      }
   }
 
 
@@ -412,7 +488,9 @@ hrm.0w.2s <- function(X, alpha , factor1, factor2, subject, data, H = "B", text 
   test <- (t(X_bar)%*%K_B%*%X_bar)/(t(rep(1,dim(K_B)[1]))%*%(K_B*direct)%*%(rep(1,dim(K_B)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

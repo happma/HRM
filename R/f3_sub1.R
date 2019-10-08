@@ -71,6 +71,7 @@ hrm.2w.1f <- function(X, alpha, group , subgroup, factor, subject, data, H, text
   # creating X_bar (list with a entries)
   X_bar <- as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
 
+  kdim <- 1
   # defining the hypothesis matrices
   if(H==1){ # A
     K <- 1/d*J(d)
@@ -84,22 +85,27 @@ hrm.2w.1f <- function(X, alpha, group , subgroup, factor, subject, data, H, text
     K <- P(d)
     S <- kronecker(1/ag*J(ag), 1/asub*J(asub))
     text <- paste(as.character(factor))
+    kdim <- d
   } else if(H==4){ # AA2
     K <- 1/d*J(d)
     S <- kronecker(P(ag), P(asub))
     text <- paste(as.character(group),":",as.character(subgroup))
+    kdim <- 1
   } else if(H==5){ # AB
     K <- P(d)
     S <- kronecker(P(ag), 1/asub*J(asub))
     text <- paste(as.character(group),":",as.character(factor))
+    kdim <- d
   } else if(H==6){ # A2B
     K <- P(d)
     S <- kronecker(1/ag*J(ag), P(asub))
     text <- paste(as.character(subgroup),":",as.character(factor))
+    kdim <- d
   } else if(H==7){ # AA2B
     K <- P(d)
     S <- kronecker(P(ag), P(asub))
     text <- paste(as.character(group),":",as.character(subgroup), ":", as.character(factor))
+    kdim <- d
   }
 
 
@@ -114,10 +120,12 @@ hrm.2w.1f <- function(X, alpha, group , subgroup, factor, subject, data, H, text
     }
   }
 
-  if(is.na(np.correction)) {
-    np.correction <- (d >= max(n))
-  }
   eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
 
   if(np.correction & nonparametric) {
     if(H %in% c(3,5,6,7)) {
@@ -250,7 +258,9 @@ hrm.2w.1f <- function(X, alpha, group , subgroup, factor, subject, data, H, text
   test <- (t(X_bar)%*%K_Hypothesis%*%X_bar)/(t(rep(1,dim(K_Hypothesis)[1]))%*%(K_Hypothesis*direct)%*%(rep(1,dim(K_Hypothesis)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

@@ -106,37 +106,44 @@ hrm.0w.3s <- function(X, alpha , factor1, factor2, factor3, subject, data, H = 1
 
 
 
-
+  kdim <- 1
   # main effects
   if(H==1){
     K <- kronecker(kronecker(P(d), 1/c*J(c)), 1/c2*J(c2))
     text <- paste(as.character(factor1) )
+    kdim <- d
   }
   if(H==2){
     K <- kronecker(kronecker(1/d*J(d), P(c)), 1/c2*J(c2))
     text <- paste(as.character(factor2) )
+    kdim <- c
   }
   if(H==3){
     K <- kronecker(kronecker(1/d*J(d), 1/c*J(c)), P(c2))
     text <- paste(as.character(factor3) )
+    kdim <- c2
   }
   # inferaction effects of 2 factors
   if(H==4){
     K <- kronecker(kronecker(P(d), P(c)), 1/c2*J(c2))
     text <- paste(as.character(factor1), ":", as.character(factor2) )
+    kdim <- d*c
   }
   if(H==5){
     K <- kronecker(kronecker(P(d), 1/c*J(c)), P(c2))
     text <- paste(as.character(factor1), ":", as.character(factor3) )
+    kdim <- d*c2
   }
   if(H==6){
     K <- kronecker(kronecker(1/d*J(d), P(c)), P(c2))
     text <- paste( as.character(factor2), ":", as.character(factor3) )
+    kdim <- c*c2
   }
   # interaction effect of three factors
   if(H==7){
     K <- kronecker(kronecker(P(d), P(c)), P(c2))
     text <- paste(as.character(factor1), ":", as.character(factor2), ":", as.character(factor3) )
+    kdim <- d*c*c2
   }
 
   S <- 1
@@ -154,10 +161,12 @@ hrm.0w.3s <- function(X, alpha , factor1, factor2, factor3, subject, data, H = 1
     }
   }
 
-  if(is.na(np.correction)) {
-    np.correction <- (d*c*c2 >= max(n))
-  }
   eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d*c*c2 >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
 
   if(np.correction & nonparametric) {
     if(H %in% 1:7) {
@@ -277,7 +286,9 @@ hrm.0w.3s <- function(X, alpha , factor1, factor2, factor3, subject, data, H = 1
   test <- (t(X_bar)%*%K_B%*%X_bar)/(t(rep(1,dim(K_B)[1]))%*%(K_B*direct)%*%(rep(1,dim(K_B)[1])))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
-
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

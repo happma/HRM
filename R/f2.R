@@ -65,6 +65,7 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   X_bar <- as.matrix(vec(sapply(X, colMeans, na.rm=TRUE)))
   eval.parent(substitute(means <- X_bar))
 
+  kdim <- 1
   if(H=="A"){
     K <- 1/d*J(d)
     S <- diag(n)-1/sum(n)*tcrossprod(n,n)
@@ -74,15 +75,19 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   } else if(H=="B"){
     K <- P(d)
     S <- 1/a*J(a)
+    kdim <- d
   } else if(H=="AB"){
     K <- P(d)
     S <- P(a)
+    kdim <- d
   } else if(H=="A|B"){
     K <- I(d)
     S <- P(a)
+    kdim <- 1
   }else if(H=="B|A"){
     K <- P(d)
     S <- I(a)
+    kdim <- d
   }
 
   # creating dual empirical covariance matrices
@@ -100,10 +105,13 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
     }
   }
 
-  if(is.na(np.correction)) {
-      np.correction <- (d >= max(n))
-  }
   eval.parent(substitute(correction <- np.correction))
+
+  if(is.na(np.correction)) {
+    eval.parent(substitute(correction <- (d >= max(n))))
+    np.correction <- (kdim >= max(n))
+  }
+
 
   if(np.correction & nonparametric) {
     if(H == "AB" | H == "B") {
@@ -127,6 +135,8 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
           }
 
           reps <- min(150, choose(nr,nr/2))
+          #reps <- min(500, choose(nr,nr/2))
+
           covs <- rep(0,reps)
           g1 <- rep(0, nr/2)
           g12 <- rep(0, nr/2)
@@ -247,6 +257,9 @@ hrm.1w.1f <- function(X, alpha, group , factor1, subject, data, H, text, nonpara
   test <- crossprod(X_bar, crossprod(K_AB, X_bar))/(crossprod(den_one, crossprod(K_AB*direct, den_one)))
   p.value <- 1-pf(test,f,f0)
   output <- data.frame(hypothesis=text,df1=f,df2=f0, crit=crit, test=test, p.value=p.value, sign.code=.hrm.sigcode(p.value))
+  if(nonparametric) {
+    output$np.correction <- np.correction
+  }
 
   return (output)
 }

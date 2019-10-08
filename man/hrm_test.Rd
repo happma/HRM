@@ -11,8 +11,8 @@ hrm_test(data, ...)
 \method{hrm_test}{list}(data, alpha = 0.05, ...)
 
 \method{hrm_test}{data.frame}(data, formula, alpha = 0.05, subject,
-  nonparametric = FALSE, np.correction = NA, character.only = FALSE,
-  ...)
+  variable = NULL, nonparametric = FALSE, np.correction = NA,
+  character.only = FALSE, ...)
 }
 \arguments{
 \item{data}{Either a data.frame (one observation per row) or a list with matrices (one subject per row) for all groups containing the data}
@@ -24,6 +24,8 @@ hrm_test(data, ...)
 \item{formula}{A model formula object. The left hand side contains the response variable and the right hand side contains the whole- and subplot factors.}
 
 \item{subject}{column name within the data frame X identifying the subjects}
+
+\item{variable}{if not 'NULL' then multivariate tests are applied. We assume that for each factor level of 'variable', we observe several repated measurements. Currently only supports designs with 1 whole- and one sub-plot factor.}
 
 \item{nonparametric}{Logical variable indicating wether the noparametric version of the test statistic should be used}
 
@@ -77,5 +79,8 @@ hrm_test(data=X, alpha=0.05)
 ?EEG
 
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
+
+# Multivariate Approach: testing effects for each variable
+hrm_test(value~group*region, subject=subject, variable=variable, data = EEG)
 }
 \keyword{export}
