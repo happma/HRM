@@ -251,11 +251,11 @@ hrm_GUI <- function(){
     stop("The package 'cairoDevice' is needed for using the graphical user interface.\nPlease install this package or use the function 'hrm_test' from package 'HRM' to perform the analysis without GUI.")
   }
   # loading the RGtk2Extras package; stops if it cannot be loaded.
-  requireNamespace("RGtk2Extras", quietly = TRUE)
-  if(!("package:RGtk2Extras" %in% search())){attachNamespace("RGtk2Extras")}
-  if(!isNamespaceLoaded("RGtk2Extras")){
-    stop("The package 'RGtk2Extras' is needed for using the graphical user interface.\nPlease install this package or use the function 'hrm_test' from package 'HRM' to perform the analysis without GUI.")
-  }
+  # requireNamespace("RGtk2Extras", quietly = TRUE)
+  # if(!("package:RGtk2Extras" %in% search())){attachNamespace("RGtk2Extras")}
+  # if(!isNamespaceLoaded("RGtk2Extras")){
+  #   stop("The package 'RGtk2Extras' is needed for using the graphical user interface.\nPlease install this package or use the function 'hrm_test' from package 'HRM' to perform the analysis without GUI.")
+  # }
 
   # Functions for Menubar
   quit_cb <- function(widget, window){
@@ -267,9 +267,10 @@ hrm_GUI <- function(){
   results_cb <- function(widget, window){
     calculate(NULL, NULL)
   }
-  view_cb <- function(widget, window){
-    RGtk2Extras::dfview(tmp)
-  }
+  # view_cb <- function(widget, window){
+  #   RGtk2Extras::dfview(tmp)
+  # }
+  #list("View Data", "gtk-open", "_View Data", "<control>V", "View CSV", view_cb),
 
   window <- RGtk2::gtkWindow()
   window["title"] <- "HRM"
@@ -277,7 +278,6 @@ hrm_GUI <- function(){
   actions <- list(
     list("FileMenu", NULL, "_File"),
     list("Open", "gtk-open", "_Open File", "<control>O", "Open CSV", open_cb),
-    list("View Data", "gtk-open", "_View Data", "<control>V", "View CSV", view_cb),
     list("Get Results", "gtk-open", "Get _Results", "<control>R", "Get Results", results_cb),
     list("Exit", "gtk-quit", "E_xit", "<control>X", "Exit", quit_cb)
   )
@@ -292,7 +292,7 @@ hrm_GUI <- function(){
                   action = NULL, type = "menubar", top = FALSE)
   uiManager$addUi(merge, "/menubar", "file", "FileMenu", "menu", FALSE)
   uiManager$addUi(merge, "/menubar/file", "open", "Open", "menuitem", FALSE)
-  uiManager$addUi(merge, "/menubar/file", "view", "View Data", "menuitem", FALSE)
+  #uiManager$addUi(merge, "/menubar/file", "view", "View Data", "menuitem", FALSE)
   uiManager$addUi(merge, "/menubar/file", "Calculate", "Get Results", "menuitem", FALSE)
   uiManager$addUi(merge, "/menubar/file", NULL, NULL, "separator", FALSE)
   uiManager$addUi(merge, "/menubar/file", "exit", "Exit", "menuitem", FALSE)
@@ -300,7 +300,7 @@ hrm_GUI <- function(){
   # TooLbar
   uiManager$addUi(merge, "/", "toolbar", NULL, "toolbar", FALSE)
   uiManager$addUi(merge, "/toolbar", "open", "Open", "toolitem", FALSE)
-  uiManager$addUi(merge, "/toolbar", "view", "View Data", "toolitem", FALSE)
+  #uiManager$addUi(merge, "/toolbar", "view", "View Data", "toolitem", FALSE)
   uiManager$addUi(merge, "/toolbar", "Calculate", "Get Results", "toolitem", FALSE)
   uiManager$addUi(merge, "/toolbar", "exit", "Exit", "toolitem", FALSE)
 
