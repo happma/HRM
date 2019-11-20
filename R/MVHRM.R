@@ -50,7 +50,7 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     C1 <- J(a)/a
     C2 <- P(a)/(a-1)
     D1 <- t(as.matrix(rep(1,t)))*1/t
-    D2 <- P(t) #cbind(I(t-1), rep(-1,t-1)) #P(t)
+    D2 <- cbind(I(t-1), rep(-1,t-1))
 
 
     result <- data.frame(method = 1:ntest, fH = 1:ntest, fG = 1:ntest, test = 1:ntest, pvalue = 1:ntest)
@@ -107,7 +107,7 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     C1 <- J(a)/a
     #C2 <- P(a)/(a-1)
     D1 <- t(as.matrix(rep(1,t)))*1/t
-    D2 <- P(t) #cbind(I(t-1), rep(-1,t-1))
+    D2 <- cbind(I(t-1), rep(-1,t-1))
 
 
 
@@ -335,14 +335,13 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D, n
 
     TDu = TD/TDsd2
 
-
     # Boik (1988), Rao F Approximation
     WL <- FALSE
     Lambda = abs(1/det(I(dim(H)[1])+H%*%solve(G,tol=1e-30)))
 
     m1 = fH
     m2 = fG
-    if( (d < fG) & ((d^2+m1^2-5) > 0) ){
+    if( (d < fG) & ((d^2+m1^2-5) > 0) & (d<=min(n)) ){
 
       a = sqrt((d^2+m1^2-5)/((m1*d)^2-4))
       v1 = m1*d
@@ -358,12 +357,13 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D, n
     result$fG <- rep(fG, 3)
     result$test <- c(TDsrv_new, TDsrv_old, TDu)
     result$pvalue <- as.double(sapply(result$test, FUN = function(s) { 2*min(pnorm(s), 1-pnorm(s)) }))
+    result$sign.code <- sapply(as.double(result$pvalue), FUN = .hrm.sigcode )
 
     if(WL) {
-      result[4, ] <- c("WL", v1, v2, WL_test, 1-pf(WL_test,v1,v2) )
+      result[4, ] <- c("WL", v1, v2, WL_test, 1-pf(WL_test,v1,v2), .hrm.sigcode(WL_test) )
     } else {
-      result[4, ] <- c("WL", NA, NA, NA, NA )
+      result[4, ] <- c("WL", NA, NA, NA, NA, NA )
     }
-    result$sign.code <- sapply(as.double(result$pvalue), FUN = .hrm.sigcode )
+
     return(result)
 }
