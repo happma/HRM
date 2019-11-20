@@ -20,8 +20,11 @@
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, formula ){
+hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, formula, nonparametric ){
 
+  ntest <- 4
+
+  # case 1w.1s.
   if(!is.null(group) & !is.null(factor1)) {
     group <- as.character(group)
     factor1 <- as.character(factor1)
@@ -47,17 +50,19 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     C1 <- J(a)/a
     C2 <- P(a)/(a-1)
     D1 <- t(as.matrix(rep(1,t)))*1/t
-    D2 <- cbind(I(t-1), rep(-1,t-1))
+    D2 <- P(t) #cbind(I(t-1), rep(-1,t-1)) #P(t)
 
 
+    result <- data.frame(method = 1:ntest, fH = 1:ntest, fG = 1:ntest, test = 1:ntest, pvalue = 1:ntest)
+    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D1, nonparametric )
+    result <- rbind(result, hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C1, D2, nonparametric ))
+    result <- rbind(result, hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D2, nonparametric ))
 
-    result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
-    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D1 )
-    result <- rbind(result, hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C1, D2 ))
-    result <- rbind(result, hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D2 ))
-
-    output2 <- data.frame(hypothesis = c(rep(as.character(group), 3), rep(as.character(factor1), 3), rep(paste(as.character(group), ":", as.character(factor1)),3)), result = result)
+    output2 <- data.frame(hypothesis = c(rep(as.character(group), ntest), rep(as.character(factor1), ntest), rep(paste(as.character(group), ":", as.character(factor1)),ntest)), result = result)
     colnames(output2) <- c("hypothesis", "method", "fH", "fG", "test", "pvalue", "sign.code")
+    for(r in 3:6) {
+      output2[, r] <- as.double(output2[, r])
+    }
 
     output <- list()
     output$result <- output2
@@ -67,14 +72,14 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     output$variable <- variable
     output$factors <- list(group, factor1)
     output$data <- X
-    output$nonparametric <- FALSE
+    output$nonparametric <- nonparametric
     output$np.correction <- FALSE
     class(output) <- "HRM"
 
     return(output)
   } # end group != NULL
 
-  # Fall 0w.1s.
+  # case 0w.1s.
   if(is.null(group) & !is.null(factor1)) {
     group <- "group"
     factor1 <- as.character(factor1)
@@ -102,14 +107,14 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     C1 <- J(a)/a
     #C2 <- P(a)/(a-1)
     D1 <- t(as.matrix(rep(1,t)))*1/t
-    D2 <- cbind(I(t-1), rep(-1,t-1))
+    D2 <- P(t) #cbind(I(t-1), rep(-1,t-1))
 
 
 
-    result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
-    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C1, D2 )
+    result <- data.frame(method = 1:ntest, fH = 1:ntest, fG = 1:ntest, test = 1:ntest, pvalue = 1:ntest)
+    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C1, D2, nonparametric )
 
-    output2 <- data.frame(hypothesis = rep(as.character(factor1), 3), result = result)
+    output2 <- data.frame(hypothesis = rep(as.character(factor1), ntest), result = result)
     colnames(output2) <- c("hypothesis", "method", "fH", "fG", "test", "pvalue", "sign.code")
 
     output <- list()
@@ -120,14 +125,14 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     output$variable <- variable
     output$factors <- list(NULL, factor1)
     output$data <- X
-    output$nonparametric <- FALSE
+    output$nonparametric <- nonparametric
     output$np.correction <- FALSE
     class(output) <- "HRM"
 
     return(output)
   } # end group == NULL
 
-  # Fall 1w.0s.
+  # case 1w.0s.
   if(!is.null(group) & is.null(factor1)) {
     group <- as.character(group)
     factor1 <- "factor1"
@@ -159,10 +164,10 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
 
 
 
-    result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
-    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D1 )
+    result <- data.frame(method = 1:ntest, fH = 1:ntest, fG = 1:ntest, test = 1:ntest, pvalue = 1:ntest)
+    result <- hrm.mv.internal(X, "group" , "factor1", "subject", "data", "variable", C2, D1, nonparametric )
 
-    output2 <- data.frame(hypothesis = rep(as.character(group), 3), result = result)
+    output2 <- data.frame(hypothesis = rep(as.character(group), ntest), result = result)
     colnames(output2) <- c("hypothesis", "method", "fH", "fG", "test", "pvalue", "sign.code")
 
     output <- list()
@@ -173,7 +178,7 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
     output$variable <- variable
     output$factors <- list(group, NULL)
     output$data <- X
-    output$nonparametric <- FALSE
+    output$nonparametric <- nonparametric
     output$np.correction <- FALSE
     class(output) <- "HRM"
 
@@ -196,9 +201,8 @@ hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, for
 #' @param text a string, which will be printed in the output
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
-hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D ){
+hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D, nonparametric ){
 
-  if(!is.null(group)) {
     group <- as.character(group)
     factor1 <- as.character(factor1)
     subject <- as.character(subject)
@@ -216,7 +220,20 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D ){
     # C <- J(a)/a
     # D = cbind(I(t-1), rep(-1,t-1))
 
-    X[order(group, subject, variable, factor1)]
+    X <- X[order(group, subject, variable, factor1),]
+
+    if(nonparametric){
+      X$data <- unlist(by(data.frame(data = X[, data], group = X[, group]), X[, variable], FUN = function(df){ pseudorank(df[, 1], df[, 2])}))
+    }
+
+    X <- X[order(group, subject, factor1, variable)]
+
+
+    # EEG$v2 <- unlist(by(EEG[,c("value", "group")], EEG[, "variable"], FUN = function(df){ pseudorank(df[, 1], df[, 2])} ))
+    # EEG$v2[1:10]
+    # df <- subset(EEG, EEG$variable == 1)
+    # dfr <- pseudorank(value~group,data=df)
+    # dfr[1:10]
 
     R = data.frame(1:(p*t))
     for(i in 1:sum(n)){
@@ -318,14 +335,35 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D ){
 
     TDu = TD/TDsd2
 
+
+    # Boik (1988), Rao F Approximation
+    WL <- FALSE
+    Lambda = abs(1/det(I(dim(H)[1])+H%*%solve(G,tol=1e-30)))
+
+    m1 = fH
+    m2 = fG
+    if( (d < fG) & ((d^2+m1^2-5) > 0) ){
+
+      a = sqrt((d^2+m1^2-5)/((m1*d)^2-4))
+      v1 = m1*d
+      v2 = a^(-1)*(m2-1/2*(d-m1+1))-1/2*(m1*d-2)
+      # finite sample approximation with an F(v1, v2) distribution
+      WL_test = (Lambda^(-a)-1)*v2/v1
+      WL <- TRUE*(v2 > 0)
+    }
+
     result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
     result$method <- c("TDsrv_new", "TDsrv_old", "TDu")
     result$fH <- rep(fH, 3)
     result$fG <- rep(fG, 3)
     result$test <- c(TDsrv_new, TDsrv_old, TDu)
-    result$pvalue <- sapply(result$test, FUN = function(s) { 2*min(pnorm(s), 1-pnorm(s)) })
-    result$sign.code <- sapply(result$pvalue, FUN = .hrm.sigcode )
-    return(result)
+    result$pvalue <- as.double(sapply(result$test, FUN = function(s) { 2*min(pnorm(s), 1-pnorm(s)) }))
 
-  } # end group != NULL
+    if(WL) {
+      result[4, ] <- c("WL", v1, v2, WL_test, 1-pf(WL_test,v1,v2) )
+    } else {
+      result[4, ] <- c("WL", NA, NA, NA, NA )
+    }
+    result$sign.code <- sapply(as.double(result$pvalue), FUN = .hrm.sigcode )
+    return(result)
 }

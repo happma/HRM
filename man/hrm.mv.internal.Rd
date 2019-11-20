@@ -4,7 +4,8 @@
 \alias{hrm.mv.internal}
 \title{MVHRM test}
 \usage{
-hrm.mv.internal(X, group, factor1, subject, data, variable, C, D)
+hrm.mv.internal(X, group, factor1, subject, data, variable, C, D,
+  nonparametric)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}

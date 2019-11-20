@@ -364,7 +364,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
   }, warning = function(w) "", error = function(e) { paste("One of the factor columns could not be converted to a factor variable." ) } )
 
   dat <- model.frame(formula, data)
-  dat2 <- data.frame(dat,subj=data[,subject], variable = data[, variable])
+  dat2 <- data.frame(dat,subj=data[,subject], variable_internal = data[, variable])
 
   m <- ncol(dat)
 
@@ -399,7 +399,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
     }
   }
   if(!is.null(variable)) {
-    p <- nlevels(dat2$variable)
+    p <- nlevels(dat2$variable_internal)
     if(!(measurements/p == countSubplotFactor)){
       stop(paste("The number of repeated measurements per subject (", measurements/p, ") is uneqal to the number of levels of the subplot factors (", countSubplotFactor, ")."))
     }
@@ -434,7 +434,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
     if(is.null(variable)) {
       return(hrm.test.1.one(X, alpha , factor1, subject, data, formula, nonparametric, np.correction ))
     } else {
-      return(hrm.mv.1w.1f(X, alpha, NULL , factor1, subject, data, variable, formula ))
+      return(hrm.mv.1w.1f(X, alpha, NULL , factor1, subject, data, variable, formula, nonparametric ))
     }
   }
 
@@ -548,7 +548,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
     if(is.null(variable)){
       return(hrm.test.1.none(X, alpha , group, subject, data, formula, nonparametric ))
     } else {
-      return(hrm.mv.1w.1f(X, alpha, group , NULL, subject, data, variable, formula ))
+      return(hrm.mv.1w.1f(X, alpha, group , NULL, subject, data, variable, formula, nonparametric ))
     }
   }
 
@@ -583,7 +583,7 @@ hrm_test_internal <- function(formula, data, alpha = 0.05,  subject, variable, n
     if(is.null(variable)) {
       return(hrm.test.2.one(X, alpha, group , factor1, subject, data, testing, formula, nonparametric, np.correction ))
     } else {
-      return(hrm.mv.1w.1f(X, alpha, group, factor1, subject, data, variable, formula))
+      return(hrm.mv.1w.1f(X, alpha, group, factor1, subject, data, variable, formula, nonparametric))
     }
   }
 

@@ -78,6 +78,7 @@ hrm_test(data=X, alpha=0.05)
 # using the EEG dataset
 ?EEG
 
+# Univariate Approach
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
 
 # Multivariate Approach: testing effects for each variable

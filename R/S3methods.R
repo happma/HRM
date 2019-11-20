@@ -66,7 +66,7 @@ hrm_test.data.frame <- function(data, formula, alpha = 0.05,  subject, variable 
 
 #' @keywords export
 print.HRM <- function(x, ...) {
-  if(x$nonparametric){
+  if(x$nonparametric & is.null(x$variable)){
     cat("Nonparametric Repeated Measures Analysis\n")
     if(x$np.correction) {
       cat("With Bias Correction for Degrees of Freedom\n")
@@ -76,8 +76,13 @@ print.HRM <- function(x, ...) {
     cat("\n")
   }
   if(!is.null(x$variable)) {
-    cat("Multivariate Repeated Measures Analysis\n")
-    cat("\n")
+    if(x$nonparametric) {
+      cat("Nonparametric Multivariate Repeated Measures Analysis\n")
+      cat("\n")
+    } else {
+      cat("Multivariate Repeated Measures Analysis\n")
+      cat("\n")
+    }
   }
   if(!is.null(x$formula)) {
     cat("Call:", "\n")
@@ -93,7 +98,7 @@ print.HRM <- function(x, ...) {
 
 #' @keywords export
 summary.HRM <- function(object, ...) {
-  if(object$nonparametric) {
+  if(object$nonparametric & is.null(object$variable)) {
     cat("Nonparametric Repeated Measures Analysis\n")
     if(object$np.correction) {
       cat("With Bias Correction for Degrees of Freedom\n")

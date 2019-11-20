@@ -4,7 +4,8 @@
 \alias{hrm.mv.1w.1f}
 \title{MVHRM test}
 \usage{
-hrm.mv.1w.1f(X, alpha, group, factor1, subject, data, variable, formula)
+hrm.mv.1w.1f(X, alpha, group, factor1, subject, data, variable, formula,
+  nonparametric)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
