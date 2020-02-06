@@ -22,7 +22,7 @@
 #' @keywords internal
 hrm.mv.1w.1f <- function(X, alpha, group , factor1, subject, data, variable, formula, nonparametric ){
 
-  ntest <- 4
+  ntest <- 3
 
   # case 1w.1s.
   if(!is.null(group) & !is.null(factor1)) {
@@ -217,9 +217,6 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D, n
     d <- p*t
     n <- table(X[,group])/d
 
-    # C <- J(a)/a
-    # D = cbind(I(t-1), rep(-1,t-1))
-
     X <- X[order(group, subject, variable, factor1),]
 
     if(nonparametric){
@@ -303,11 +300,11 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D, n
     TD = sqrt(d)*fG*matrix.trace(H)/matrix.trace(G) - sqrt(d)*fH
 
     TDsd_new = (2*(fH)*matrix.trace(S%*%S)/d-matrix.trace(S)^2/(fG*d))/(matrix.trace(S)^2/d^2)*(1+fH/fG)*fG^2/(fG^2+fG-2)
-    TDsd_old = (2*(fH)*matrix.trace(S%*%S)/d-matrix.trace(S)^2/(fG*d))/(matrix.trace(S)^2/d^2)*fG^2/(fG^2+fG-2)
+    #TDsd_old = (2*(fH)*matrix.trace(S%*%S)/d-matrix.trace(S)^2/(fG*d))/(matrix.trace(S)^2/d^2)*fG^2/(fG^2+fG-2)
 
     # test based on Srivastava variance estimator
     TDsrv_new = TD/sqrt(TDsd_new)
-    TDsrv_old = TD/sqrt(TDsd_old)
+    #TDsrv_old = TD/sqrt(TDsd_old)
 
     # test based on U-statistics estimator
     TDsdN <- 0
@@ -351,18 +348,18 @@ hrm.mv.internal <- function(X, group , factor1, subject, data, variable, C, D, n
       WL <- TRUE*(v2 > 0)
     }
 
-    result <- data.frame(method = 1:3, fH = 1:3, fG = 1:3, test = 1:3, pvalue = 1:3)
-    result$method <- c("TDsrv_new", "TDsrv_old", "TDu")
-    result$fH <- rep(fH, 3)
-    result$fG <- rep(fG, 3)
-    result$test <- c(TDsrv_new, TDsrv_old, TDu)
+    result <- data.frame(method = 1:2, fH = 1:2, fG = 1:2, test = 1:2, pvalue = 1:2)
+    result$method <- c("TDsrv_new", "TDu")
+    result$fH <- rep(fH, 2)
+    result$fG <- rep(fG, 2)
+    result$test <- c(TDsrv_new, TDu)
     result$pvalue <- as.double(sapply(result$test, FUN = function(s) { 2*min(pnorm(s), 1-pnorm(s)) }))
     result$sign.code <- sapply(as.double(result$pvalue), FUN = .hrm.sigcode )
 
     if(WL) {
-      result[4, ] <- c("WL", v1, v2, WL_test, 1-pf(WL_test,v1,v2), .hrm.sigcode(WL_test) )
+      result[3, ] <- c("WL", v1, v2, WL_test, 1-pf(WL_test,v1,v2), .hrm.sigcode(WL_test) )
     } else {
-      result[4, ] <- c("WL", NA, NA, NA, NA, NA )
+      result[3, ] <- c("WL", NA, NA, NA, NA, NA )
     }
 
     return(result)
