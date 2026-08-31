@@ -34,7 +34,7 @@ hrm_test <- function(data, ...) {
 
 #' @method hrm_test default
 #' @keywords export
-hrm_test.default <- function(data) {
+hrm_test.default <- function(data, ...) {
   stop("Your data needs either to be a data.frame or a list containing matrices (a matrix for each group).")
 }
 

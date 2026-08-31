@@ -53,7 +53,7 @@ hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
 
 ## References
 
-[1] Happ, M., Harrar, S. W., and Bathke, A. C. (2018). HRM: An R Package for Analysing High-dimensional Multi-factor Repeated Measures. The R Journal 10(1), 534--548. <a href="https://journal.r-project.org/archive/2018/RJ-2018-032/index.html">https://journal.r-project.org/archive/2018/RJ-2018-032/index.html</a>
+[1] Happ, M., Harrar, S. W., and Bathke, A. C. (2018). HRM: An R Package for Analysing High-dimensional Multi-factor Repeated Measures. The R Journal 10(1), 534--548. <a href="https://journal.r-project.org/articles/RJ-2018-032/index.html">https://journal.r-project.org/articles/RJ-2018-032/index.html</a>
 
 [2] Happ, M., Harrar S. W. and Bathke, A. C. (2017). High-dimensional Repeated
   Measures. Journal of Statistical Theory and Practice. 11(3), 468-477. URL:

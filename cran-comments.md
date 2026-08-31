@@ -39,6 +39,10 @@ breaking changes.
 This note is expected for a package returning from the archive; the issues
 that led to the archival are described above.
 
+The same check also reports possibly misspelled words in DESCRIPTION:
+"Happ" is the first author's surname, and "et al." is part of the citation
+required by the submission checklist. Both are false positives.
+
 ## Downstream dependencies
 
 There are no reverse dependencies on CRAN.
