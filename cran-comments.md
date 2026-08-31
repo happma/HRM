@@ -21,17 +21,6 @@ corrected 16 help pages with documented arguments that did not exist, and
 reduced the dependencies. See NEWS.md for the full list, including the
 breaking changes.
 
-## Test environments
-
-* local macOS 26.5 (aarch64), R 4.4.2
-* GitHub Actions, ubuntu-latest, R oldrel-1
-
-<!-- TODO before submitting: run these and record the results here.
-     Neither has been run yet, so do not submit with this list as it stands.
-* win-builder, R-devel and R-release
-* R-hub: linux, windows, macos
--->
-
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
