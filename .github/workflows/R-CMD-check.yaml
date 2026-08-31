@@ -1,9 +1,13 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+#
+# Push to 'test'          -> one job, Ubuntu on the oldest R we claim to support.
+# PR into main/master     -> the full platform matrix.
 on:
   push:
-    branches: [test, main, master]
+    branches: [test]
   pull_request:
+    branches: [main, master]
   workflow_dispatch:
 
 name: R-CMD-check.yaml
@@ -19,15 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,  r: 'release'}
-          - {os: ubuntu-latest,  r: 'oldrel-1'}
-          # Lowest R version we claim to support in DESCRIPTION (Depends: R >= 4.1.0).
-          # If this job fails, the declared floor is wrong -- fix DESCRIPTION, not this file.
-          - {os: ubuntu-latest,  r: '4.1'}
+        # On a push to 'test' this collapses to the single R 4.1 job -- that is
+        # the floor declared in DESCRIPTION (Depends: R >= 4.1.0), so if it
+        # fails the declared floor is wrong and DESCRIPTION needs fixing.
+        # Pull requests into main/master get the full matrix.
+        config: ${{ fromJSON(github.event_name == 'push'
+          && '[{"os":"ubuntu-latest","r":"4.1"}]'
+          || '[{"os":"ubuntu-latest","r":"4.1"},{"os":"ubuntu-latest","r":"oldrel-1"},{"os":"ubuntu-latest","r":"release"},{"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},{"os":"macos-latest","r":"release"},{"os":"windows-latest","r":"release"}]') }}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
