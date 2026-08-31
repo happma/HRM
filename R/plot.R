@@ -18,7 +18,7 @@
 #' @param legend logical indicating if a legend should be plotted
 #' @param legend.title title of the legend
 #' @return Plots profiles of the groups.
-#' @example R/example_plot.txt
+#' @example inst/examples/plot.R
 #' @keywords internal
 hrm.plot <- function(data, group , factor1, subject, response, xlab="time", ylab="mean", legend = TRUE, legend.title = NULL ){
   X <- as.data.frame(data)
@@ -54,7 +54,7 @@ hrm.plot <- function(data, group , factor1, subject, response, xlab="time", ylab
 
   colnames(means) <- c("dimension",groupnames)
 
-  means <- melt(means, id.vars="dimension")
+  means <- as.data.frame(melt(as.data.table(means), id.vars="dimension"))
   colnames(means) <- c("dimension", "group", "value")
 
   pl <- ggplot() +
