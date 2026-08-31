@@ -23,13 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # On a push to 'test' this collapses to the single R 4.1 job -- that is
-        # the floor declared in DESCRIPTION (Depends: R >= 4.1.0), so if it
+        # On a push to 'test' this collapses to the single R 4.2 job -- that is
+        # the floor declared in DESCRIPTION (Depends: R >= 4.2.0), so if it
         # fails the declared floor is wrong and DESCRIPTION needs fixing.
         # Pull requests into main/master get the full matrix.
         config: ${{ fromJSON(github.event_name == 'push'
-          && '[{"os":"ubuntu-latest","r":"4.1"}]'
-          || '[{"os":"ubuntu-latest","r":"4.1"},{"os":"ubuntu-latest","r":"oldrel-1"},{"os":"ubuntu-latest","r":"release"},{"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},{"os":"macos-latest","r":"release"},{"os":"windows-latest","r":"release"}]') }}
+          && '[{"os":"ubuntu-latest","r":"4.2"}]'
+          || '[{"os":"ubuntu-latest","r":"4.2"},{"os":"ubuntu-latest","r":"oldrel-1"},{"os":"ubuntu-latest","r":"release"},{"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},{"os":"macos-latest","r":"release"},{"os":"windows-latest","r":"release"}]') }}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

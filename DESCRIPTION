@@ -9,7 +9,7 @@ Authors@R: c(person("Martin", "Happ", role = c("aut", "cre"),
 	      person("Arne C.", "Bathke", role = "aut"))
 Maintainer: Martin Happ <statistics@happ.co.at>
 LazyData: true
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.2.0)
 Imports: ggplot2, matrixcalc, plyr, data.table, Rcpp (>= 0.12.16),
     pseudorank (>= 0.3.7)
 Suggests: MASS, testthat
