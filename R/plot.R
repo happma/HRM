@@ -58,8 +58,8 @@ hrm.plot <- function(data, group , factor1, subject, response, xlab="time", ylab
   colnames(means) <- c("dimension", "group", "value")
 
   pl <- ggplot() +
-        geom_line(data=means, aes(x=means$dimension, y=means$value,group=means$group,colour=means$group)) +
-        geom_point(data=means, aes(x=means$dimension, y=means$value,group=means$group,colour=means$group),size=1.5) +
+        geom_line(data=means, aes(x=.data$dimension, y=.data$value, group=.data$group, colour=.data$group)) +
+        geom_point(data=means, aes(x=.data$dimension, y=.data$value, group=.data$group, colour=.data$group),size=1.5) +
         xlab(xlab) +
         ylab(ylab)
 

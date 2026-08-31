@@ -61,8 +61,8 @@ plot.HRM <- function(x, xlab = "time", ylab = "mean", legend = TRUE, legend.titl
     means <- data.frame(value = m, group = gl(a, d), dimension = as.factor(rep(1:d, a)))
 
     pl <- ggplot() +
-          geom_line(data=means, aes(x=means$dimension, y=means$value,group=means$group,colour=means$group)) +
-          geom_point(data=means, aes(x=means$dimension, y=means$value,group=means$group,colour=means$group),size=1.5) +
+          geom_line(data=means, aes(x=.data$dimension, y=.data$value, group=.data$group, colour=.data$group)) +
+          geom_point(data=means, aes(x=.data$dimension, y=.data$value, group=.data$group, colour=.data$group),size=1.5) +
           xlab(xlab) +
           ylab(ylab)
 
