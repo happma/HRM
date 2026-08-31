@@ -88,15 +88,3 @@ hrm.test.dataframe <- function(data, alpha = 0.05, group , subgroup, factor1, fa
   # calculate test statistics with method hrm_test
   hrm_test(formula = form, alpha = alpha, subject = subject, data = data)
 }
-
-
-#' Graphical User Interface for Testing Multi-Factor High-Dimensional Repeated Measures
-#' 
-#' @description Graphical User Interface (R Package RGtk2 needed) for the Function 'hrm_test': Test for main effects and interaction effects of one or two between-subject factors and one, two or three within-subject factors (at most four factors can be used).
-#' @return The results can be saved as LaTeX Code or as plain text. Additionally a plot of the group profiles an be saved when using one whole- and one subplot factor. 
-#' @keywords internal
-hrm.GUI <- function(){
-  .Deprecated("hrm_GUI", package=NULL,
-              old = as.character(sys.call(sys.parent()))[1L])
-  hrm_GUI()
-}
