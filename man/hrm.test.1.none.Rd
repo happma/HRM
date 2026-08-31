@@ -14,10 +14,6 @@ hrm.test.1.none(X, alpha, group, subject, data, formula, nonparametric)
 \item{group}{column name of the data frame X specifying the groups}
 
 \item{subject}{column name of the data frame X identifying the subjects}
-
-\item{factor1}{column name of the data frame X of the first factor variable}
-
-\item{factor2}{column name of the data frame X of the second factor variable}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

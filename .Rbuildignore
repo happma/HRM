@@ -1,4 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
-^appveyor\.yml$
+^\.gitignore$
+^\.github$
+^research$
+^cran-comments\.md$
+^\.Rhistory$
+^.*\.Rcheck$
+^.*\.tar\.gz$

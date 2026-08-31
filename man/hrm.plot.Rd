@@ -4,8 +4,17 @@
 \alias{hrm.plot}
 \title{Plots profiles of the groups in case of one whole- and one subplot-factor.}
 \usage{
-hrm.plot(data, group, factor1, subject, response, xlab = "time",
-  ylab = "mean", legend = TRUE, legend.title = NULL)
+hrm.plot(
+  data,
+  group,
+  factor1,
+  subject,
+  response,
+  xlab = "time",
+  ylab = "mean",
+  legend = TRUE,
+  legend.title = NULL
+)
 }
 \arguments{
 \item{data}{A data.frame containing the data}
@@ -43,11 +52,11 @@ head(EEG)
 object_hrm <- hrm_test(value ~ group*dimension, subject = "subject", data = EEG)
 
 # plot the HRM object, here we use the additional argument 'theme_bw()' for ggplot2
-plot(object_hrm, legend = TRUE, legend.title = "Group", ... =  theme_bw() )
+plot(object_hrm, legend = TRUE, legend.title = "Group", ... =  ggplot2::theme_bw() )
 
 # same plot without a legend
 # note that 'theme_bw' overwrites the standard legend properties of plot.HRM
-plot(object_hrm, ... =  theme_bw() +
-  theme(legend.title = element_blank(), legend.position="none") )
+plot(object_hrm, ... =  ggplot2::theme_bw() +
+  ggplot2::theme(legend.title = ggplot2::element_blank(), legend.position="none") )
 }
 \keyword{internal}

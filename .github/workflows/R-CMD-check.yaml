@@ -1,0 +1,60 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+#
+# Push to 'test'          -> one job, Ubuntu on the oldest R we claim to support.
+# PR into main/master     -> the full platform matrix.
+on:
+  push:
+    branches: [test]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+name: R-CMD-check.yaml
+
+permissions: read-all
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # On a push to 'test' this collapses to a single Ubuntu job on
+        # oldrel-1, the oldest R the dependency tree can actually be
+        # installed on today (HRM -> pseudorank -> doBy -> Deriv, and Deriv
+        # 4.3.0 needs R >= 4.5 for R_ClosureFormals while declaring no R
+        # requirement at all). See DESCRIPTION for the declared floor.
+        # Pull requests into main/master get the full matrix.
+        config: ${{ fromJSON(github.event_name == 'push'
+          && '[{"os":"ubuntu-latest","r":"oldrel-1"}]'
+          || '[{"os":"ubuntu-latest","r":"oldrel-1"},{"os":"ubuntu-latest","r":"release"},{"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},{"os":"macos-latest","r":"release"},{"os":"windows-latest","r":"release"}]') }}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          args: 'c("--no-manual", "--as-cran")'
+          build_args: 'c("--no-manual")'

@@ -4,8 +4,19 @@
 \alias{hrm.test.3.three}
 \title{Test for two subplot factors}
 \usage{
-hrm.test.3.three(X, alpha, factor1, factor2, factor3, subject, data, formula,
-  testing = rep(1, 7), nonparametric)
+hrm.test.3.three(
+  X,
+  alpha,
+  factor1,
+  factor2,
+  factor3,
+  subject,
+  data,
+  formula,
+  testing = rep(1, 7),
+  nonparametric,
+  np.correction
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -19,8 +30,6 @@ hrm.test.3.three(X, alpha, factor1, factor2, factor3, subject, data, formula,
 \item{factor3}{column name of the data frame X of the third factor variable}
 
 \item{subject}{column name of the data frame X identifying the subjects}
-
-\item{group}{column name of the data frame X specifying the groups}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

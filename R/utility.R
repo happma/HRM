@@ -1,130 +1,26 @@
 ####################################################################################################################################
 ### Filename:    utility.R
 ### Description: trace estimator functions, dual empirical covariance matrix function
-###              
+###
 ###
 ###
 ####################################################################################################################################
 
-# generalizedRanks_tmp <- function(dat, n, t, method = "unweighted"){
-# 
-#   start <- Sys.time()
-#   
-#   a=length(n)
-#   X=dat[,data]
-#   nobs=length(X)
-#   granks <- pr <- rep(0, nobs)
-#   
-#   # pseudo-ranks
-#   if(method == "unweighted"){
-#     weights   = rep(1/n[1], n[1]*t)
-#     for(i in 2:a){
-#       weights = c(weights, rep(1/n[i], n[i]*t) )
-#     }
-#     ff <- function(k){
-#       return(((sign(X[k] - t(X)) + 1)*0.5)%*%(weights)*sum(n)/a + 0.5 )
-#     }
-#     granks <- vapply(1:nobs, FUN = ff, FUN.VALUE = numeric(1L))
-#   }
-#   # ranks
-#   else if(method == "weighted"){
-#     granks <- ranks(dat[,data], ties.method = "average")
-#   }
-#   else {
-#     granks <- ranks(dat[,data], ties.method = "average")
-#   }
-#   
-#   ende <- Sys.time()
-#   print(ende-start)
-#   
-#   return(granks)
-# }
-#   
-# generalizedRanks <- cmpfun(generalizedRanks_tmp)
-
-
-# pseudorank <- function(liste){
-#   # defining variables und preparing data
-#   a <- length(liste)
-#   g <- list(0)
-#   n <- vapply(liste, FUN=nrow, FUN.VALUE = 0L  )
-#   g <- lapply(liste, FUN=vec)
-#   gg <- unlist(g)
-#   t <- ncol(liste[[1]])
-#   
-#   # defining normalized ecdf's
-#   F <- function(x, h, n, i,dim){
-#     return( 1/2*1/n[i]*(sum(h[[i]][,dim]<x) + sum(h[[i]][,dim]<=x)  ) )
-#   }
-#   
-#   # unweighted average ecdf
-#   G <- function(x, h, n, ngroups) {
-#     return(1/ngroups*1/t*sum(vapply(1:ngroups, FUN=F, FUN.VALUE = 1, h=liste, n=n, x=x, dim = 1:t)))
-#   }
-#   
-#   # calculate pseudoranks
-#   pseudoranks <- sum(n)*t*vapply(gg, FUN = G, h = liste, n = n, ngroups = a, FUN.VALUE = vector(mode="double", length=1L)  ) + 1/2
-#   
-#   # put all observations from one subject in one row
-#   result <- list(0)
-#   for(i in 1:a){
-#     j <- sum(n[0:(i-1)])*t+1
-#     jj <- sum(n[0:i])*t
-#     result[[i]] <- matrix(pseudoranks[j:jj], nrow = n[i], ncol=t, byrow = FALSE)
-#   }
-#   return(result)
-# }
-
 calcU <- function(X, n, grp, K){
-  Q1c <- 0
-  Q2c <- 0
-  for(i in 1:n[grp]){
-    j <- i + 1
-    while(j <= n[grp]){
-      #ii <- min(setdiff(1:n[grp],c(i,j)))
-      #jj <- min(setdiff(1:n[grp],c(i,j,ii)))
-      #Z1 <- K%*%(X[[grp]][i,]- X[[grp]][ii,] )
-      #Z2 <- K%*%(X[[grp]][j,]- X[[grp]][jj,] )
-      #Z1 <- K%*%(X[[grp]][i,]- 1/(n[grp]-1)*(colMeans(X[[grp]])*n[grp]-X[[grp]][j,]) )
-      #Z2 <- K%*%(X[[grp]][j,]- 1/(n[grp]-1)*(colMeans(X[[grp]])*n[grp]-X[[grp]][i,]) )
-      Z1 <- K%*%(X[[grp]][i,]- colMeans(X[[grp]]) )
-      Z2 <- K%*%(X[[grp]][j,]- colMeans(X[[grp]]) )
-      Q2c <- Q2c + (t(Z1)%*%Z2)^2
-      Q1c <- Q1c + t(Z1)%*%Z1*t(Z2)%*%Z2
-      j <- j + 1
-    }
+  dat <- X[[grp]]
+  if(dim(dat)[2] == 1) {
+    Q <- calcUCppV(dat, n[grp], mean(dat[, 1]) )
+  } else {
+    Q <- calcUCpp(dat,n[grp],K,colMeans(dat))
   }
-  #corr <- (1-1/n[grp])^2+(n[grp]-2)*1/(n[grp]-1)^2
-  #corr <- 2
-  corr <- (1-1/n[grp])
-  Q2c <- Q2c*2/(n[grp]*(n[grp]-1))*1/corr^2 #(1-1/n[grp])^(-2)#1/4
-  Q1c <- Q1c*2/(n[grp]*(n[grp]-1))*1/corr^2 #(1-1/n[grp])^(-2)#1/4
-  return(c(Q1c,Q2c))
+  return(Q)
 }
 
 
 calcU_onegroup <- function(X, n, K){
-  Q1c <- 0
-  Q2c <- 0
-  for(i in 1:n[1]){
-    j <- i + 1
-    while(j <= n[1]){
-      #ii <- min(setdiff(1:n[1],c(i,j)))
-      #jj <- min(setdiff(1:n[1],c(i,j,ii)))
-      #Z1 <- K%*%(X[i,]- X[ii,] )
-      #Z2 <- K%*%(X[j,]- X[jj,] )
-      Z1 <- K%*%(X[i,]-colMeans(X) )
-      Z2 <- K%*%(X[j,]-colMeans(X) )
-
-      Q2c <- Q2c + (t(Z1)%*%Z2)^2
-      Q1c <- Q1c + t(Z1)%*%Z1*t(Z2)%*%Z2
-      j <- j + 1
-    }
-  }
-  #corr <- (n[1]^2-2*n[1]+2)/n[1]^2
-  Q2c <- Q2c*2/(n[1]*(n[1]-1))*(1-1/n[1])^(-2)#1/4
-  Q1c <- Q1c*2/(n[1]*(n[1]-1))*(1-1/n[1])^(-2)#1/4
-  return(c(Q1c,Q2c))
+  dat <- X
+  Q <- calcUCpp(dat,n,K,colMeans(X))
+  return(Q)
 }
 
 
@@ -135,7 +31,7 @@ calcU_onegroup <- function(X, n, K){
 #' @param n vector of sample size
 #' @keywords internal
 .E1 <- function(n,i, M, nonparametric, Q) {
-  
+
   trace_estimator <- ifelse(nonparametric, Q[i,1], (n[i]*(n[i]-1))/((n[i]-2)*(n[i]+1))*(matrix.trace(M)^2-2/n[i]*matrix.trace(M%*%M)))
   return (trace_estimator)
 }
@@ -150,17 +46,17 @@ calcU_onegroup <- function(X, n, K){
   return (trace_estimator)
 }
 #' Unbiased estimator
-#' 
-#' @param i group index
-#' @param M a matrix
+#'
+#' @param M_i a matrix for group i
+#' @param M_j a matrix for group j
 #' @keywords internal
 .E3 <- function(M_i, M_j) {
   return (matrix.trace(M_i)*matrix.trace(M_j))
 }
 #' Unbiased estimator
-#' 
-#' @param i group index
-#' @param M a matrix
+#'
+#' @param M_i a matrix for group i
+#' @param M_j a matrix for group j
 #' @keywords internal
 .E4 <- function(M_i,M_j) {
   return (matrix.trace(M_i%*%M_j))
@@ -168,29 +64,29 @@ calcU_onegroup <- function(X, n, K){
 
 
 #' Function for the output: significant p-values have on or more stars
-#' 
+#'
 #' @param value p-value
 #' @keywords internal
 .hrm.sigcode <- function(value) {
-  
+
   char <- ""
-  if(value <= 0.1 & value > 0.05) { char = "."}
-  if(value <= 0.05 & value > 0.01) {char = '*'}
-  if(value <= 0.01 & value > 0.001) {char = "**"}
-  if(value <= 0.001 & value >= 0) {char = "***"}
+  if(value <= 0.1 & value > 0.05) { char <- "."}
+  if(value <= 0.05 & value > 0.01) {char <- '*'}
+  if(value <= 0.01 & value > 0.001) {char <- "**"}
+  if(value <= 0.001 & value >= 0) {char <- "***"}
   return (char)
 }
 
 
 #' Function for the indentity matrix
-#' 
+#'
 #' @param size dimension of the matrix
 #' @keywords internal
 I <- function(size){
   return (diag(rep(1,size)))
 }
 #' Function for a matrix with entries 1
-#' 
+#'
 #' @param size dimension of the matrix
 #' @keywords internal
 
@@ -198,7 +94,7 @@ J <- function(size){
   return (rep(1,size)%*%t(rep(1,size)))
 }
 #' Function for the centering matrix
-#' 
+#'
 #' @param size dimension of the matrix
 #' @keywords internal
 P <- function(size){
@@ -206,7 +102,7 @@ P <- function(size){
 }
 
 #' Function for the dual empirical matrix
-#' 
+#'
 #' @param Data data.frame
 #' @param B not used
 #' @keywords internal
@@ -216,7 +112,7 @@ DualEmpirical <- function(Data, B){
   return(1/(n-1)*P(n)%*%Data%*%B%*%t(Data)%*%P(n))
 }
 #' Function for the dual empirical matrix
-#' 
+#'
 #' @param Data data.frame
 #' @param B part of the hypothesis matrix
 #' @keywords internal

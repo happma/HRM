@@ -16,18 +16,30 @@
 \item{...}{Further arguments passed to 'hrm_test' will be ignored}
 }
 \value{
-Returns a data.frame with mean and 1-alpha confidence interval for each factor combintation
+Returns a data.frame with mean and 1-alpha confidence interval for each factor level combination. The attribute \code{"status"} states which form of multiplicity control was used: family-wise error rate over all factor level combinations, family-wise error rate within each whole-plot group, a Sidak correction within each group, or none.
 }
 \description{
 Function to calculate simultaneous, asymptotic (1-alpha) confidence intervals for an object of class 'HRM'.
 }
 \examples{
-# hrm.test with a data.frame using a 'formula' object
-
 # using the EEG dataset
-?EEG
+z <- hrm_test(value ~ dimension, subject = "subject", data = EEG)
 
+# simultaneous confidence intervals for each factor level combination
+ci <- confint(z)
+head(ci)
+
+# which form of multiplicity control was used
+attr(ci, "status")
+
+\donttest{
+# With a whole-plot factor the correlation matrix can become large enough
+# that mvtnorm::qmvnorm() fails. confint() then falls back to controlling
+# the family-wise error rate within each group, or to a Sidak correction.
+# The status says which of these was actually used.
 z <- hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
-confint(z)
+ci <- confint(z, level = 0.99)
+attr(ci, "status")
+}
 }
 \keyword{export}

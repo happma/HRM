@@ -10,8 +10,16 @@ hrm_test(data, ...)
 
 \method{hrm_test}{list}(data, alpha = 0.05, ...)
 
-\method{hrm_test}{data.frame}(data, formula, alpha = 0.05, subject,
-  nonparametric = FALSE, ...)
+\method{hrm_test}{data.frame}(
+  data,
+  formula,
+  alpha = 0.05,
+  subject,
+  nonparametric = FALSE,
+  np.correction = NA,
+  character.only = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{Either a data.frame (one observation per row) or a list with matrices (one subject per row) for all groups containing the data}
@@ -25,6 +33,10 @@ hrm_test(data, ...)
 \item{subject}{column name within the data frame X identifying the subjects}
 
 \item{nonparametric}{Logical variable indicating wether the noparametric version of the test statistic should be used}
+
+\item{np.correction}{Logical variable indicating wether a small sample size correction for the nonparametric test should be used (TRUE) or not (FALSE). By using NA, np.correction is used automatically in an high-dimensional setting.}
+
+\item{character.only}{a logical indicating whether subject can be assumed to be a character string}
 }
 \value{
 Returns an object from class HRM containing
@@ -60,7 +72,7 @@ mu_1 = mu_2 = rep(0,d)
 sigma_1 = diag(d)
 for(k in 1:d) for(l in 1:d) sigma_1[k,l] = 1/(1-0.5^2)*0.5^(abs(k-l))
 sigma_2 = 1.5*sigma_1
-X = list(mvrnorm(n[1],mu_1, sigma_1), mvrnorm(n[2],mu_2, sigma_2))
+X = list(MASS::mvrnorm(n[1],mu_1, sigma_1), MASS::mvrnorm(n[2],mu_2, sigma_2))
 X=lapply(X, as.matrix)
 
 hrm_test(data=X, alpha=0.05)
@@ -69,8 +81,6 @@ hrm_test(data=X, alpha=0.05)
 ## hrm.test with a data.frame using a 'formula' object
 
 # using the EEG dataset
-?EEG
-
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
 }
 \keyword{export}

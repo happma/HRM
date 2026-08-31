@@ -8,8 +8,20 @@
 \usage{
 hrm.test.matrix(data, alpha = 0.05)
 
-hrm.test.dataframe(data, alpha = 0.05, group, subgroup, factor1, factor2,
-  factor3, subject, response)
+hrm.test.dataframe(
+  data,
+  alpha = 0.05,
+  group,
+  subgroup,
+  factor1,
+  factor2,
+  factor3,
+  subject,
+  response
+)
+}
+\value{
+\code{hrm.test.matrix} and \code{hrm.test.dataframe} both return an object of class 'HRM', exactly as returned by \code{\link{hrm_test}}.
 }
 \description{
 The functions listed below are deprecated and will be defunct in

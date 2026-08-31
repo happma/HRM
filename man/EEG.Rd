@@ -4,7 +4,9 @@
 \name{EEG}
 \alias{EEG}
 \title{EEG data of 160 subjects}
-\format{A data frame with 6400 rows and 7 variables.}
+\format{
+A data frame with 6400 rows and 7 variables.
+}
 \usage{
 data(EEG)
 }
@@ -19,7 +21,7 @@ The columns are as follows:
   \item sex. Sex of the subject: Male (M) or Female (W).
   \item subject. A unique identification of a subject.
   \item variable. The variales measured are activity, complexity, mobility and brain rate coded from 1 to 4.
-  \item region. Frontal left/right, central left/right, temporal left/right, occipital left/right, parietal left/right coded as 1 to 10. 
+  \item region. Frontal left/right, central left/right, temporal left/right, occipital left/right, parietal left/right coded as 1 to 10.
   \item dimension. Mixing variable and region together, levels range from 1 to 40.
 }
 }

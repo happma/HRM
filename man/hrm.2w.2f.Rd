@@ -4,8 +4,22 @@
 \alias{hrm.2w.2f}
 \title{Test for influence of factor A}
 \usage{
-hrm.2w.2f(X, alpha, group, subgroup, factor1, factor2, subject, data, H,
-  text = "", nonparametric, ranked, varQGlobal)
+hrm.2w.2f(
+  X,
+  alpha,
+  group,
+  subgroup,
+  factor1,
+  factor2,
+  subject,
+  data,
+  H,
+  text = "",
+  nonparametric,
+  ranked,
+  varQGlobal,
+  np.correction
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -23,8 +37,6 @@ hrm.2w.2f(X, alpha, group, subgroup, factor1, factor2, subject, data, H,
 \item{H}{string specifying the hypothesis}
 
 \item{text}{a string, which will be printed in the output}
-
-\item{factor}{column name of the data frame X of within-subject factor}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
