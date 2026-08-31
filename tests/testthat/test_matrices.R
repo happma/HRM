@@ -28,5 +28,5 @@ test_that("function hrm_test with matrices", {
   expect_equal(result2, true_result, tol = 1e-4)
   expect_output(summary(t_matrices))
   expect_output(print(t_matrices))
-  expect_equal(class(plot(t_matrices)), c("gg", "ggplot"))
+  expect_true(inherits(plot(t_matrices), "ggplot"))
 })
