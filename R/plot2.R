@@ -16,6 +16,7 @@
 #' @param legend logical indicating if a legend should be plotted
 #' @param legend.title title of the legend
 #' @param ... Further arguments passed to the 'plot' function
+#' @return An object of class 'ggplot' containing the profile plot of the group means, which can be printed or further modified with 'ggplot2' functions.
 #' @example inst/examples/plot.R
 #' @keywords export
 plot.HRM <- function(x, xlab = "time", ylab = "mean", legend = TRUE, legend.title = "", ...) {
@@ -89,7 +90,7 @@ plot.HRM <- function(x, xlab = "time", ylab = "mean", legend = TRUE, legend.titl
     return(pl)
 
   } else {
-    print("Plot function only supports one whole- and one subplotfactor.")
+    stop("Plot function only supports one whole- and one subplotfactor.")
   }
 
 }

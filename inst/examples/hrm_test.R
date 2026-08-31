@@ -22,6 +22,4 @@ hrm_test(data=X, alpha=0.05)
 ## hrm.test with a data.frame using a 'formula' object
 
 # using the EEG dataset
-?EEG
-
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)

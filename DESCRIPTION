@@ -10,7 +10,7 @@ Authors@R: c(person("Martin", "Happ", role = c("aut", "cre"),
 Maintainer: Martin Happ <statistics@happ.co.at>
 LazyData: true
 Depends: R (>= 4.2.0)
-Imports: ggplot2, matrixcalc, plyr, data.table, Rcpp (>= 0.12.16),
+Imports: ggplot2, matrixcalc, plyr, data.table, doBy, mvtnorm, Rcpp (>= 0.12.16),
     pseudorank (>= 0.3.7)
 Suggests: MASS, testthat
 LinkingTo: Rcpp

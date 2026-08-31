@@ -30,11 +30,13 @@ confint(z_readme, level = 0.99)
 #> Error: missing value where TRUE/FALSE needed
 
 
-## --- 3. Root cause ---------------------------------------------------------
-## conf_int.R builds a correlation matrix R from object$var, then calls
-## mvtnorm::qmvnorm(level, corr = R, tail = "both").
-## With a whole-plot factor, R is SINGULAR, and qmvnorm cannot handle that:
-## pmvnorm returns NaN internally, and the NaN reaches an if() condition.
+## --- 3. Upstream bug, plus an observation about the input ------------------
+## The failure is an UPSTREAM BUG in mvtnorm::qmvnorm(), not a legitimate
+## rejection of the input: this call worked in the past and is unchanged
+## since 2018-07-13. Reproduced under mvtnorm 1.3.3 and 1.3.6.
+##
+## Separately, R happens to be singular for these designs. That is recorded
+## below because it is useful context, but it is NOT the established cause.
 
 corr_of <- function(z) {
   m <- dim(z$var)[1]; R <- diag(m); c <- rep(0, m)
@@ -52,8 +54,8 @@ for (nm in c("z_ok", "z_bad")) {
   cat(sprintf("%-6s dim=%3d rank=%3d min.eigenvalue=%.3e\n",
               nm, nrow(R), qr(R)$rank, min(ev)))
 }
-#> z_ok   dim= 40 rank= 40 min.eigenvalue=1.467e-03   <- positive definite, ok
-#> z_bad  dim=160 rank=136 min.eigenvalue=-1.690e-15  <- SINGULAR, qmvnorm fails
+#> z_ok   dim= 40 rank= 40 min.eigenvalue=1.467e-03   <- positive definite
+#> z_bad  dim=160 rank=136 min.eigenvalue=-1.690e-15  <- singular
 
 ## Confirm qmvnorm is the failing call, not anything upstream:
 R_bad <- corr_of(z_bad)

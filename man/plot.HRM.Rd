@@ -19,6 +19,9 @@
 
 \item{...}{Further arguments passed to the 'plot' function}
 }
+\value{
+An object of class 'ggplot' containing the profile plot of the group means, which can be printed or further modified with 'ggplot2' functions.
+}
 \description{
 Plotting profile curves for up to one whole- or subplot-factor
 }

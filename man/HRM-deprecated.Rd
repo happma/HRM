@@ -20,6 +20,9 @@ hrm.test.dataframe(
   response
 )
 }
+\value{
+\code{hrm.test.matrix} and \code{hrm.test.dataframe} both return an object of class 'HRM', exactly as returned by \code{\link{hrm_test}}.
+}
 \description{
 The functions listed below are deprecated and will be defunct in
   the near future. When possible, alternative functions with similar

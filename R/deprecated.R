@@ -14,6 +14,7 @@
 #'   functionality are also mentioned. Help pages for deprecated functions are
 #'   available at \code{help("hrm.test.matrix-deprecated")} and \code{help("hrm.test.dataframe-deprecated")}.
 #' @name HRM-deprecated
+#' @return \code{hrm.test.matrix} and \code{hrm.test.dataframe} both return an object of class 'HRM', exactly as returned by \code{\link{hrm_test}}.
 #' @keywords internal
 NULL
 
