@@ -3,3 +3,17 @@
 .RData
 .Ruserdata
 Repeated.Rproj
+
+# Claude Code
+.claude/
+
+# Compiled objects / shared libraries
+*.o
+*.so
+*.dylib
+*.dll
+
+# R build & check artefacts
+*.Rcheck/
+*.tar.gz
+.Rproj.user/
