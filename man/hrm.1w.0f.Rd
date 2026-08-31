@@ -4,8 +4,18 @@
 \alias{hrm.1w.0f}
 \title{Test for interaction of factor A and B}
 \usage{
-hrm.1w.0f(X, alpha, group, subject, data, H, text, nonparametric, ranked,
-  varQGlobal)
+hrm.1w.0f(
+  X,
+  alpha,
+  group,
+  subject,
+  data,
+  H,
+  text,
+  nonparametric,
+  ranked,
+  varQGlobal
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -21,8 +31,6 @@ hrm.1w.0f(X, alpha, group, subject, data, H, text, nonparametric, ranked,
 \item{H}{string specifying the hypothesis}
 
 \item{text}{a string, which will be printed in the output}
-
-\item{factor1}{column name of the data frame X of the first factor variable}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

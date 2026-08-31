@@ -10,9 +10,16 @@ hrm_test(data, ...)
 
 \method{hrm_test}{list}(data, alpha = 0.05, ...)
 
-\method{hrm_test}{data.frame}(data, formula, alpha = 0.05, subject,
-  variable = NULL, nonparametric = FALSE, np.correction = NA,
-  character.only = FALSE, ...)
+\method{hrm_test}{data.frame}(
+  data,
+  formula,
+  alpha = 0.05,
+  subject,
+  nonparametric = FALSE,
+  np.correction = NA,
+  character.only = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{Either a data.frame (one observation per row) or a list with matrices (one subject per row) for all groups containing the data}
@@ -24,8 +31,6 @@ hrm_test(data, ...)
 \item{formula}{A model formula object. The left hand side contains the response variable and the right hand side contains the whole- and subplot factors.}
 
 \item{subject}{column name within the data frame X identifying the subjects}
-
-\item{variable}{if not 'NULL' then multivariate tests are applied. We assume that for each factor level of 'variable', we observe several repated measurements. Currently only supports designs with 1 whole- and one sub-plot factor.}
 
 \item{nonparametric}{Logical variable indicating wether the noparametric version of the test statistic should be used}
 
@@ -67,7 +72,7 @@ mu_1 = mu_2 = rep(0,d)
 sigma_1 = diag(d)
 for(k in 1:d) for(l in 1:d) sigma_1[k,l] = 1/(1-0.5^2)*0.5^(abs(k-l))
 sigma_2 = 1.5*sigma_1
-X = list(mvrnorm(n[1],mu_1, sigma_1), mvrnorm(n[2],mu_2, sigma_2))
+X = list(MASS::mvrnorm(n[1],mu_1, sigma_1), MASS::mvrnorm(n[2],mu_2, sigma_2))
 X=lapply(X, as.matrix)
 
 hrm_test(data=X, alpha=0.05)
@@ -78,10 +83,6 @@ hrm_test(data=X, alpha=0.05)
 # using the EEG dataset
 ?EEG
 
-# Univariate Approach
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
-
-# Multivariate Approach: testing effects for each variable
-hrm_test(value~group*region, subject=subject, variable=variable, data = EEG)
 }
 \keyword{export}

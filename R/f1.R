@@ -10,7 +10,6 @@
 #'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
-#' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
 #' @param factor2 column name of the data frame X of the second factor variable
 #' @param subject column name of the data frame X identifying the subjects
@@ -52,9 +51,7 @@ hrm.test.2.two <- function(X, alpha , factor1, factor2, subject, data, formula, 
 #'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
-#' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
-#' @param factor2 column name of the data frame X of the second factor variable
 #' @param subject column name of the data frame X identifying the subjects
 #' @return Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value
 #' @keywords internal
@@ -86,7 +83,6 @@ hrm.test.1.one <- function(X, alpha , factor1, subject, data, formula, nonparame
 #'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
-#' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
 #' @param subject column name of the data frame X identifying the subjects
 #' @param data column name of the response variable
@@ -287,7 +283,6 @@ hrm.1f <- function(X, alpha , factor1, subject, data, H = "B", text ="" , nonpar
 #'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
-#' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
 #' @param subject column name of the data frame X identifying the subjects
 #' @param data column name of the response variable

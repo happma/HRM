@@ -1,10 +1,8 @@
-# HRM 1.2.0
+# HRM 1.3.0
 
 [![CRANstatus](https://www.r-pkg.org/badges/version/HRM)](https://cran.r-project.org/package=HRM)
 [![](https://cranlogs.r-pkg.org/badges/HRM)](https://cran.r-project.org/package=HRM)
-[![Travis-CI Build Status](https://travis-ci.org/happma/HRM.svg?branch=test)](https://travis-ci.org/happma/HRM)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/happma/HRM?branch=test&svg=true)](https://ci.appveyor.com/project/happma/HRM)
-[![codecov](https://codecov.io/gh/happma/HRM/branch/test/graph/badge.svg)](https://codecov.io/gh/happma/HRM)
+[![R-CMD-check](https://github.com/happma/HRM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/happma/HRM/actions/workflows/R-CMD-check.yaml)
 
 
 R package for analysing high-dimensional repeated measures for factorial designs. A description of this package can be found in [1], theoretical derivations of the test statistics are in [2] and [3].
@@ -41,7 +39,7 @@ mu_1 = mu_2 = rep(0,d)
 sigma_1 = diag(d)
 for(k in 1:d) for(l in 1:d) sigma_1[k,l] = 1/(1-0.5^2)*0.5^(abs(k-l))
 sigma_2 = 1.5*sigma_1
-X = list(mvrnorm(n[1],mu_1, sigma_1), mvrnorm(n[2],mu_2, sigma_2))
+X = list(MASS::mvrnorm(n[1],mu_1, sigma_1), MASS::mvrnorm(n[2],mu_2, sigma_2))
 X=lapply(X, as.matrix)
 
 hrm_test(data=X, alpha=0.05)
@@ -51,31 +49,6 @@ hrm_test(data=X, alpha=0.05)
 
 # using the EEG dataset
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
-```
-
-To get confidence intervals for each factor combination you can use the generic function 'confint' for an object of class 'HRM'. This function calculates simultaneous confidence intervals which maintains the family wise error rate (FWER).
-See the following code:
-
-``` r
-# using the EEG dataset
-z <- hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
-
-# calculate 99% confidence intervals
-confint(z, level = 0.99)
-
-```
-
-In the data there are 4 variables with each 10 regions. We can use a multivariate approach as the variables are on different scales. For that, we can use the function 'hrm_test' with the argument 'variable' set to the column name which contains the factor variable for the variables.
-
-``` r
-# using the EEG dataset
-hrm_test(value ~ group*region, subject = subject, variable = variable, data = EEG)
-```
-
-
-Additionally, the package can be used with a GUI.
-``` r
-hrm_GUI()
 ```
 
 ## References

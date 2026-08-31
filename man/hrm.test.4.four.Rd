@@ -4,8 +4,20 @@
 \alias{hrm.test.4.four}
 \title{Test for two subplot factors}
 \usage{
-hrm.test.4.four(X, alpha, factor1, factor2, factor3, factor4, subject,
-  data, formula, testing = rep(1, 2^4 - 1), nonparametric, np.correction)
+hrm.test.4.four(
+  X,
+  alpha,
+  factor1,
+  factor2,
+  factor3,
+  factor4,
+  subject,
+  data,
+  formula,
+  testing = rep(1, 2^4 - 1),
+  nonparametric,
+  np.correction
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -21,8 +33,6 @@ hrm.test.4.four(X, alpha, factor1, factor2, factor3, factor4, subject,
 \item{factor4}{column name of the data frame X of the fourth factor variable}
 
 \item{subject}{column name of the data frame X identifying the subjects}
-
-\item{group}{column name of the data frame X specifying the groups}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

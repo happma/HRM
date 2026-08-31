@@ -4,9 +4,23 @@
 \alias{hrm.0w.5s}
 \title{Test for interaction of four subplot factors}
 \usage{
-hrm.0w.5s(X, alpha, factor1, factor2, factor3, factor4, factor5, subject,
-  data, H = 1, text = "", nonparametric, ranked, varQGlobal,
-  np.correction)
+hrm.0w.5s(
+  X,
+  alpha,
+  factor1,
+  factor2,
+  factor3,
+  factor4,
+  factor5,
+  subject,
+  data,
+  H = 1,
+  text = "",
+  nonparametric,
+  ranked,
+  varQGlobal,
+  np.correction
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -22,8 +36,6 @@ hrm.0w.5s(X, alpha, factor1, factor2, factor3, factor4, factor5, subject,
 \item{H}{string specifying the hypothesis}
 
 \item{text}{a string, which will be printed in the output}
-
-\item{group}{column name of the data frame X specifying the groups}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

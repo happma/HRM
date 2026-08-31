@@ -13,7 +13,7 @@ mu_1 = mu_2 = rep(0,d)
 sigma_1 = diag(d)
 for(k in 1:d) for(l in 1:d) sigma_1[k,l] = 1/(1-0.5^2)*0.5^(abs(k-l))
 sigma_2 = 1.5*sigma_1
-X = list(mvrnorm(n[1],mu_1, sigma_1), mvrnorm(n[2],mu_2, sigma_2))
+X = list(MASS::mvrnorm(n[1],mu_1, sigma_1), MASS::mvrnorm(n[2],mu_2, sigma_2))
 X=lapply(X, as.matrix)
 
 hrm_test(data=X, alpha=0.05)
@@ -24,8 +24,4 @@ hrm_test(data=X, alpha=0.05)
 # using the EEG dataset
 ?EEG
 
-# Univariate Approach
 hrm_test(value ~ group*region*variable, subject = "subject", data = EEG)
-
-# Multivariate Approach: testing effects for each variable
-hrm_test(value~group*region, subject=subject, variable=variable, data = EEG)

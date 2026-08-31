@@ -7,9 +7,9 @@
 .E3(M_i, M_j)
 }
 \arguments{
-\item{i}{group index}
+\item{M_i}{a matrix for group i}
 
-\item{M}{a matrix}
+\item{M_j}{a matrix for group j}
 }
 \description{
 Unbiased estimator

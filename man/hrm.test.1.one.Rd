@@ -4,8 +4,16 @@
 \alias{hrm.test.1.one}
 \title{Test for one subplot factor}
 \usage{
-hrm.test.1.one(X, alpha, factor1, subject, data, formula, nonparametric,
-  np.correction)
+hrm.test.1.one(
+  X,
+  alpha,
+  factor1,
+  subject,
+  data,
+  formula,
+  nonparametric,
+  np.correction
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -15,10 +23,6 @@ hrm.test.1.one(X, alpha, factor1, subject, data, formula, nonparametric,
 \item{factor1}{column name of the data frame X of the first factor variable}
 
 \item{subject}{column name of the data frame X identifying the subjects}
-
-\item{group}{column name of the data frame X specifying the groups}
-
-\item{factor2}{column name of the data frame X of the second factor variable}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

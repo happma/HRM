@@ -4,7 +4,9 @@
 \name{EEG}
 \alias{EEG}
 \title{EEG data of 160 subjects}
-\format{A data frame with 6400 rows and 7 variables.}
+\format{
+A data frame with 6400 rows and 7 variables.
+}
 \usage{
 data(EEG)
 }

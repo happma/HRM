@@ -47,16 +47,16 @@ calcU_onegroup <- function(X, n, K){
 }
 #' Unbiased estimator
 #'
-#' @param i group index
-#' @param M a matrix
+#' @param M_i a matrix for group i
+#' @param M_j a matrix for group j
 #' @keywords internal
 .E3 <- function(M_i, M_j) {
   return (matrix.trace(M_i)*matrix.trace(M_j))
 }
 #' Unbiased estimator
 #'
-#' @param i group index
-#' @param M a matrix
+#' @param M_i a matrix for group i
+#' @param M_j a matrix for group j
 #' @keywords internal
 .E4 <- function(M_i,M_j) {
   return (matrix.trace(M_i%*%M_j))

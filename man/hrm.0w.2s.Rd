@@ -4,9 +4,22 @@
 \alias{hrm.0w.2s}
 \title{Test for interaction of factor A and B}
 \usage{
-hrm.0w.2s(X, alpha, factor1, factor2, subject, data, H = "B",
-  text = "", nonparametric, ranked, varQGlobal, np.correction, tmpQ1g,
-  tmpQ2g)
+hrm.0w.2s(
+  X,
+  alpha,
+  factor1,
+  factor2,
+  subject,
+  data,
+  H = "B",
+  text = "",
+  nonparametric,
+  ranked,
+  varQGlobal,
+  np.correction,
+  tmpQ1g,
+  tmpQ2g
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -22,8 +35,6 @@ hrm.0w.2s(X, alpha, factor1, factor2, subject, data, H = "B",
 \item{H}{string specifying the hypothesis}
 
 \item{text}{a string, which will be printed in the output}
-
-\item{group}{column name of the data frame X specifying the groups}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

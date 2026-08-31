@@ -16,7 +16,7 @@
 #' @param legend logical indicating if a legend should be plotted
 #' @param legend.title title of the legend
 #' @param ... Further arguments passed to the 'plot' function
-#' @example R/example_plot.txt
+#' @example inst/examples/plot.R
 #' @keywords export
 plot.HRM <- function(x, xlab = "time", ylab = "mean", legend = TRUE, legend.title = "", ...) {
 

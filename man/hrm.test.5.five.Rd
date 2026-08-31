@@ -4,9 +4,21 @@
 \alias{hrm.test.5.five}
 \title{Test for two subplot factors}
 \usage{
-hrm.test.5.five(X, alpha, factor1, factor2, factor3, factor4, factor5,
-  subject, data, formula, testing = rep(1, 2^5 - 1), nonparametric,
-  np.correction)
+hrm.test.5.five(
+  X,
+  alpha,
+  factor1,
+  factor2,
+  factor3,
+  factor4,
+  factor5,
+  subject,
+  data,
+  formula,
+  testing = rep(1, 2^5 - 1),
+  nonparametric,
+  np.correction
+)
 }
 \arguments{
 \item{X}{dataframe containing the data in the long table format}
@@ -24,8 +36,6 @@ hrm.test.5.five(X, alpha, factor1, factor2, factor3, factor4, factor5,
 \item{factor5}{column name of the data frame X of the fifth factor variable}
 
 \item{subject}{column name of the data frame X identifying the subjects}
-
-\item{group}{column name of the data frame X specifying the groups}
 }
 \value{
 Returns a data frame consisting of the degrees of freedom, the test value, the critical value and the p-value

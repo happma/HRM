@@ -10,7 +10,6 @@
 #'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
-#' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
 #' @param factor2 column name of the data frame X of the second factor variable
 #' @param factor3 column name of the data frame X of the third factor variable
@@ -69,7 +68,6 @@ hrm.test.5.five<- function(X, alpha , factor1, factor2, factor3, factor4, factor
 #'
 #' @param X dataframe containing the data in the long table format
 #' @param alpha alpha level used for the test
-#' @param group column name of the data frame X specifying the groups
 #' @param factor1 column name of the data frame X of the first factor variable
 #' @param subject column name of the data frame X identifying the subjects
 #' @param data column name of the response variable

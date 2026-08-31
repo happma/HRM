@@ -12,7 +12,6 @@
 #' @param alpha alpha level used for the test
 #' @param group column name of the data frame X specifying the groups
 #' @param subgroup column name of the subgroups (crossed with groups)
-#' @param factor column name of the data frame X of within-subject factor
 #' @param subject column name of the data frame X identifying the subjects
 #' @param data column name of the data frame X containing the measurement data
 #' @param H string specifying the hypothesis
